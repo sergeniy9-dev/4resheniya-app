@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import "../styles/constructor.css";
 
-import {
-  constructorSteps,
-  recommendations,
-} from "../data/solutions";
-
+import { constructorSteps, recommendations } from "../data/solutions";
+import { atmosphereThemes } from "../data/themes";
 import { sendLeadToCRM } from "../services/leadService";
+import { trackEvent } from "../services/analyticsService";
 
 export default function Constructor() {
   const [step, setStep] = useState(0);
   const [result, setResult] = useState(false);
   const [visible, setVisible] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     contact: "",
@@ -30,6 +29,9 @@ export default function Constructor() {
   const recommendation =
     recommendations[answers.priority] || recommendations.default;
 
+  const activeTheme =
+    atmosphereThemes[answers.mood] || atmosphereThemes.default;
+
   useEffect(() => {
     const section = document.querySelector("#constructor");
 
@@ -44,6 +46,7 @@ export default function Constructor() {
     );
 
     if (section) observer.observe(section);
+
     return () => observer.disconnect();
   }, []);
 
@@ -52,6 +55,11 @@ export default function Constructor() {
       ...prev,
       [current.key]: value,
     }));
+
+    trackEvent("constructor_select", {
+      step: current.key,
+      value,
+    });
   }
 
   function nextStep() {
@@ -59,9 +67,15 @@ export default function Constructor() {
 
     if (step < constructorSteps.length - 1) {
       setStep(step + 1);
-    } else {
-      setResult(true);
+      return;
     }
+
+    trackEvent("constructor_completed", {
+      ...answers,
+      recommendation,
+    });
+
+    setResult(true);
   }
 
   function prevStep() {
@@ -81,20 +95,28 @@ export default function Constructor() {
       return;
     }
 
-    await sendLeadToCRM({
+    const lead = {
       name: form.name,
       contact: form.contact,
       ...answers,
       recommendation,
-    });
+    };
 
-    alert("Заявка собрана. Специалист сможет связаться с клиентом.");
+    trackEvent("lead_form_submit", lead);
+
+    await sendLeadToCRM(lead);
+
+    alert("Заявка собрана. Специалист свяжется с вами.");
   }
 
   return (
     <section
       id="constructor"
-      className={visible ? "constructor constructor-visible" : "constructor"}
+      className={
+        visible
+          ? `constructor constructor-visible ${activeTheme.className}`
+          : `constructor ${activeTheme.className}`
+      }
     >
       <div className="constructor-bg"></div>
 
@@ -236,6 +258,21 @@ export default function Constructor() {
               <Summary label="Приоритет" value={answers.priority} />
               <Summary label="Атмосфера" value={answers.mood} />
               <Summary label="Уровень" value={answers.level} />
+            </div>
+
+            <div className="atmosphere-preview">
+              <div className="atmosphere-visual">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+
+              <div className="atmosphere-copy">
+                <span>Атмосфера</span>
+                <h4>{activeTheme.label}</h4>
+                <p>{activeTheme.note}</p>
+                <small>{activeTheme.material}</small>
+              </div>
             </div>
 
             <form className={result ? "lead-form active" : "lead-form"}>
