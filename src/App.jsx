@@ -1,4 +1,4 @@
-import Hero from "./components/hero";
+import Hero from "./components/Hero";
 import Constructor from "./components/Constructor";
 
 export default function App() {
