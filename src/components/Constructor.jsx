@@ -3,12 +3,14 @@ import "../styles/constructor.css";
 
 import { constructorSteps, recommendations } from "../data/solutions";
 import { atmosphereThemes } from "../data/themes";
+import { getPreviewImage } from "../data/previewLibrary";
 import { sendLeadToCRM } from "../services/leadService";
 import { trackEvent } from "../services/analyticsService";
 
 export default function Constructor() {
   const [step, setStep] = useState(0);
   const [result, setResult] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const [form, setForm] = useState({
@@ -31,6 +33,8 @@ export default function Constructor() {
 
   const activeTheme =
     atmosphereThemes[answers.mood] || atmosphereThemes.default;
+
+  const previewImage = getPreviewImage(answers);
 
   useEffect(() => {
     const section = document.querySelector("#constructor");
@@ -70,15 +74,27 @@ export default function Constructor() {
       return;
     }
 
-    trackEvent("constructor_completed", {
+    setAnalyzing(true);
+
+    trackEvent("constructor_analysis_started", {
       ...answers,
       recommendation,
     });
 
-    setResult(true);
+    setTimeout(() => {
+      setAnalyzing(false);
+      setResult(true);
+
+      trackEvent("constructor_completed", {
+        ...answers,
+        recommendation,
+      });
+    }, 1400);
   }
 
   function prevStep() {
+    if (analyzing) return;
+
     if (result) {
       setResult(false);
       return;
@@ -100,6 +116,7 @@ export default function Constructor() {
       contact: form.contact,
       ...answers,
       recommendation,
+      previewImage,
     };
 
     trackEvent("lead_form_submit", lead);
@@ -132,7 +149,22 @@ export default function Constructor() {
 
         <div className="constructor-layout">
           <div className="constructor-main reveal-item reveal-2">
-            {!result ? (
+            {analyzing ? (
+              <div className="analysis-screen">
+                <p className="eyebrow">Формируем карту</p>
+                <h3>Анализируем выбранные сценарии</h3>
+
+                <div className="analysis-loader">
+                  <i></i>
+                </div>
+
+                <div className="analysis-steps">
+                  <span>Сопоставляем объект и задачу</span>
+                  <span>Подбираем атмосферу и уровень реализации</span>
+                  <span>Формируем рекомендованный сценарий</span>
+                </div>
+              </div>
+            ) : !result ? (
               <div className="step-screen" key={step}>
                 <div className="constructor-head">
                   <div>
@@ -186,6 +218,16 @@ export default function Constructor() {
                   {answers.level}».
                 </p>
 
+                <div
+                  className="result-mood-image"
+                  style={{
+                    backgroundImage: `url(${previewImage})`,
+                  }}
+                >
+                  <div className="result-mood-overlay"></div>
+                  <span>{activeTheme.label}</span>
+                </div>
+
                 <div className="recommendation">
                   <span>Рекомендованный сценарий</span>
                   <h4>{recommendation}</h4>
@@ -227,12 +269,12 @@ export default function Constructor() {
               <button
                 className="constructor-secondary"
                 onClick={prevStep}
-                disabled={step === 0 && !result}
+                disabled={(step === 0 && !result) || analyzing}
               >
                 ← Назад
               </button>
 
-              {!result && (
+              {!result && !analyzing && (
                 <button
                   className={
                     selected
@@ -260,13 +302,7 @@ export default function Constructor() {
               <Summary label="Уровень" value={answers.level} />
             </div>
 
-            <div className="atmosphere-preview">
-              <div className="atmosphere-visual">
-                <i></i>
-                <i></i>
-                <i></i>
-              </div>
-
+            <div className="atmosphere-preview atmosphere-info-only">
               <div className="atmosphere-copy">
                 <span>Атмосфера</span>
                 <h4>{activeTheme.label}</h4>
