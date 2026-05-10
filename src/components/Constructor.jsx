@@ -219,14 +219,14 @@ export default function Constructor() {
                 </p>
 
                 <div
-                  className="result-mood-image"
-                  style={{
-                    backgroundImage: `url(${previewImage})`,
-                  }}
-                >
-                  <div className="result-mood-overlay"></div>
-                  <span>{activeTheme.label}</span>
-                </div>
+  className="result-mood-image"
+  style={{
+    backgroundImage: `url(${previewImage})`,
+  }}
+>
+  <div className="result-mood-overlay"></div>
+  <span>{activeTheme.label}</span>
+</div>
 
                 <div className="recommendation">
                   <span>Рекомендованный сценарий</span>
