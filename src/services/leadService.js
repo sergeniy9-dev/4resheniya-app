@@ -9,43 +9,18 @@ export async function sendLeadToCRM(lead) {
     createdAt: new Date().toISOString(),
   };
 
-  console.log("Лид для CRM:", payload);
+  console.log("Лид:", payload);
 
-  if (!appConfig.bitrixWebhookUrl) {
-    return {
-      ok: true,
-      mode: "console",
-      payload,
-    };
-  }
-
-  const response = await fetch(appConfig.bitrixWebhookUrl, {
+  await fetch("/api/send-telegram", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      fields: {
-        TITLE: `Карта решений — ${payload.object || "Новый лид"}`,
-        NAME: payload.name,
-        PHONE: [{ VALUE: payload.contact, VALUE_TYPE: "WORK" }],
-        SOURCE_ID: "WEB",
-        COMMENTS:
-          `Источник: ${payload.source}\n` +
-          `Воронка: ${payload.funnel}\n` +
-          `Объект: ${payload.object}\n` +
-          `Приоритет: ${payload.priority}\n` +
-          `Атмосфера: ${payload.mood}\n` +
-          `Уровень: ${payload.level}\n` +
-          `Рекомендация: ${payload.recommendation}\n` +
-          `Страница: ${payload.page}`,
-      },
-    }),
+    body: JSON.stringify(payload),
   });
 
-  if (!response.ok) {
-    throw new Error("Ошибка отправки лида");
-  }
-
-  return response.json();
+  return {
+    ok: true,
+    payload,
+  };
 }
