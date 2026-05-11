@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/constructor.css";
 
+import { generateAiSummary } from "../data/aiSummary";
 import { constructorSteps, recommendations } from "../data/solutions";
 import { atmosphereThemes } from "../data/themes";
 import { getPreviewImage } from "../data/previewLibrary";
@@ -35,7 +36,7 @@ export default function Constructor() {
     atmosphereThemes[answers.mood] || atmosphereThemes.default;
 
   const previewImage = getPreviewImage(answers);
-
+  const aiSummary = generateAiSummary(answers);
   useEffect(() => {
     const section = document.querySelector("#constructor");
 
@@ -227,7 +228,16 @@ export default function Constructor() {
   <div className="result-mood-overlay"></div>
   <span>{activeTheme.label}</span>
 </div>
+<div className="ai-summary-card">
+  <span>{aiSummary.title}</span>
+  <p>{aiSummary.text}</p>
 
+  <div className="ai-summary-list">
+    {aiSummary.bullets.map((item) => (
+      <b key={item}>{item}</b>
+    ))}
+  </div>
+</div>
                 <div className="recommendation">
                   <span>Рекомендованный сценарий</span>
                   <h4>{recommendation}</h4>
