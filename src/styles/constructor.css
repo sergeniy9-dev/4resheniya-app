@@ -988,3 +988,32 @@
   font-size: 14px;
   line-height: 1.35;
 }
+.lead-status {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.lead-status b {
+  display: block;
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.lead-status p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.lead-status.online {
+  box-shadow: 0 0 40px rgba(199, 165, 90, 0.08);
+}
+
+.lead-status.offline {
+  opacity: 0.86;
+}

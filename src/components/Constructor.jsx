@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/constructor.css";
-
+import { getLeadResponseMessage } from "../services/workTimeService";
 import { generateAiSummary } from "../data/aiSummary";
 import { constructorSteps, recommendations } from "../data/solutions";
 import { atmosphereThemes } from "../data/themes";
@@ -13,7 +13,7 @@ export default function Constructor() {
   const [result, setResult] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [visible, setVisible] = useState(false);
-
+const [leadStatus, setLeadStatus] = useState(null);
   const [form, setForm] = useState({
     name: "",
     contact: "",
@@ -124,7 +124,7 @@ export default function Constructor() {
 
     await sendLeadToCRM(lead);
 
-    alert("Заявка собрана. Специалист свяжется с вами.");
+    setLeadStatus(getLeadResponseMessage());
   }
 
   return (
@@ -346,6 +346,12 @@ export default function Constructor() {
               <button type="button" onClick={handleLeadSubmit}>
                 Жду звонка
               </button>
+              {leadStatus && (
+  <div className={`lead-status ${leadStatus.mode}`}>
+    <b>{leadStatus.title}</b>
+    <p>{leadStatus.text}</p>
+  </div>
+)}
 
               <small>Выбор из конструктора будет передан в CRM.</small>
             </form>
