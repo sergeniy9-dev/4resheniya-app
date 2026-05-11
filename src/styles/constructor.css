@@ -1017,3 +1017,58 @@
 .lead-status.offline {
   opacity: 0.86;
 }
+.atmosphere-info-only {
+  padding: 28px;
+}
+
+.atmosphere-copy {
+  padding-left: 4px;
+}
+.progress button {
+  height: 4px;
+  flex: 1;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.progress button.active {
+  background: #ffffff;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.28);
+}
+
+.progress button:hover {
+  transform: scaleY(1.8);
+}
+.constructor-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.constructor-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.32),
+    rgba(255, 255, 255, 0)
+  );
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+}
+
+.constructor-primary:hover::before {
+  transform: translateX(120%);
+}
+
+.constructor-primary {
+  z-index: 1;
+}
+
+.constructor-primary::before {
+  z-index: -1;
+}

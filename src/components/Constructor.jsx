@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/constructor.css";
+
 import { getLeadResponseMessage } from "../services/workTimeService";
 import { generateAiSummary } from "../data/aiSummary";
 import { constructorSteps, recommendations } from "../data/solutions";
@@ -13,7 +14,8 @@ export default function Constructor() {
   const [result, setResult] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [visible, setVisible] = useState(false);
-const [leadStatus, setLeadStatus] = useState(null);
+  const [leadStatus, setLeadStatus] = useState(null);
+
   const [form, setForm] = useState({
     name: "",
     contact: "",
@@ -37,6 +39,7 @@ const [leadStatus, setLeadStatus] = useState(null);
 
   const previewImage = getPreviewImage(answers);
   const aiSummary = generateAiSummary(answers);
+
   useEffect(() => {
     const section = document.querySelector("#constructor");
 
@@ -61,14 +64,27 @@ const [leadStatus, setLeadStatus] = useState(null);
       [current.key]: value,
     }));
 
+    setLeadStatus(null);
+
     trackEvent("constructor_select", {
       step: current.key,
       value,
     });
   }
 
+  function goToStep(index) {
+    if (analyzing) return;
+
+    setResult(false);
+    setAnalyzing(false);
+    setStep(index);
+    setLeadStatus(null);
+  }
+
   function nextStep() {
     if (!selected) return;
+
+    setLeadStatus(null);
 
     if (step < constructorSteps.length - 1) {
       setStep(step + 1);
@@ -96,6 +112,8 @@ const [leadStatus, setLeadStatus] = useState(null);
   function prevStep() {
     if (analyzing) return;
 
+    setLeadStatus(null);
+
     if (result) {
       setResult(false);
       return;
@@ -108,7 +126,12 @@ const [leadStatus, setLeadStatus] = useState(null);
 
   async function handleLeadSubmit() {
     if (!form.name || !form.contact) {
-      alert("Введите имя и телефон или Telegram.");
+      setLeadStatus({
+        title: "Заполните контакты",
+        text: "Укажите имя и телефон или Telegram для связи.",
+        mode: "offline",
+      });
+
       return;
     }
 
@@ -178,10 +201,12 @@ const [leadStatus, setLeadStatus] = useState(null);
 
                   <div className="progress">
                     {constructorSteps.map((_, index) => (
-                      <i
+                      <button
                         key={index}
+                        type="button"
                         className={index <= step ? "active" : ""}
-                      ></i>
+                        onClick={() => goToStep(index)}
+                      ></button>
                     ))}
                   </div>
                 </div>
@@ -220,24 +245,26 @@ const [leadStatus, setLeadStatus] = useState(null);
                 </p>
 
                 <div
-  className="result-mood-image"
-  style={{
-    backgroundImage: `url(${previewImage})`,
-  }}
->
-  <div className="result-mood-overlay"></div>
-  <span>{activeTheme.label}</span>
-</div>
-<div className="ai-summary-card">
-  <span>{aiSummary.title}</span>
-  <p>{aiSummary.text}</p>
+                  className="result-mood-image"
+                  style={{
+                    backgroundImage: `url(${previewImage})`,
+                  }}
+                >
+                  <div className="result-mood-overlay"></div>
+                  <span>{activeTheme.label}</span>
+                </div>
 
-  <div className="ai-summary-list">
-    {aiSummary.bullets.map((item) => (
-      <b key={item}>{item}</b>
-    ))}
-  </div>
-</div>
+                <div className="ai-summary-card">
+                  <span>{aiSummary.title}</span>
+                  <p>{aiSummary.text}</p>
+
+                  <div className="ai-summary-list">
+                    {aiSummary.bullets.map((item) => (
+                      <b key={item}>{item}</b>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="recommendation">
                   <span>Рекомендованный сценарий</span>
                   <h4>{recommendation}</h4>
@@ -346,12 +373,13 @@ const [leadStatus, setLeadStatus] = useState(null);
               <button type="button" onClick={handleLeadSubmit}>
                 Жду звонка
               </button>
+
               {leadStatus && (
-  <div className={`lead-status ${leadStatus.mode}`}>
-    <b>{leadStatus.title}</b>
-    <p>{leadStatus.text}</p>
-  </div>
-)}
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+                </div>
+              )}
 
               <small>Выбор из конструктора будет передан в CRM.</small>
             </form>
