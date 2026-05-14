@@ -9,12 +9,25 @@ import { getPreviewImage } from "../data/previewLibrary";
 import { sendLeadToCRM } from "../services/leadService";
 import { trackEvent } from "../services/analyticsService";
 
+const analysisSteps = [
+  "Считываем параметры пространства...",
+  "Сопоставляем сценарии использования...",
+  "Подбираем атмосферу проекта...",
+  "Проверяем совместимость материалов...",
+  "Формируем рекомендации...",
+  "Подготавливаем карту решений...",
+];
+
 export default function Constructor() {
   const [step, setStep] = useState(0);
   const [result, setResult] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [visible, setVisible] = useState(false);
   const [leadStatus, setLeadStatus] = useState(null);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [analysisMessages, setAnalysisMessages] = useState([
+    "Подготавливаем систему анализа...",
+  ]);
 
   const [form, setForm] = useState({
     name: "",
@@ -92,21 +105,52 @@ export default function Constructor() {
     }
 
     setAnalyzing(true);
+    setAnalysisMessages([analysisSteps[0]]);
+    setAnalysisProgress(0);
 
     trackEvent("constructor_analysis_started", {
       ...answers,
       recommendation,
     });
 
-    setTimeout(() => {
-      setAnalyzing(false);
-      setResult(true);
+    let progress = 0;
+    let messageIndex = 0;
 
-      trackEvent("constructor_completed", {
-        ...answers,
-        recommendation,
-      });
-    }, 1400);
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 14) + 7;
+
+      if (progress >= 100) {
+        progress = 100;
+      }
+
+      setAnalysisProgress(progress);
+
+      if (
+        messageIndex < analysisSteps.length - 1 &&
+        progress > (messageIndex + 1) * 15
+      ) {
+        messageIndex += 1;
+
+        setAnalysisMessages((prev) => [
+          ...prev,
+          analysisSteps[messageIndex],
+        ]);
+      }
+
+      if (progress >= 100) {
+        clearInterval(interval);
+
+        setTimeout(() => {
+          setAnalyzing(false);
+          setResult(true);
+
+          trackEvent("constructor_completed", {
+            ...answers,
+            recommendation,
+          });
+        }, 600);
+      }
+    }, 320);
   }
 
   function prevStep() {
@@ -166,8 +210,8 @@ export default function Constructor() {
           <p className="eyebrow">МЕТОД 4РЕШЕНИЯ</p>
           <h2>Получите карту решений</h2>
           <span>
-            Это не бесплатный дизайн-проект, а предварительная карта 4 сценариев:
-            как можно подойти к вашему пространству до начала работ.
+            Это не бесплатный дизайн-проект, а предварительная карта 4
+            сценариев: как можно подойти к вашему пространству до начала работ.
           </span>
         </div>
 
@@ -175,17 +219,39 @@ export default function Constructor() {
           <div className="constructor-main reveal-item reveal-2">
             {analyzing ? (
               <div className="analysis-screen">
-                <p className="eyebrow">Формируем карту</p>
-                <h3>Анализируем выбранные сценарии</h3>
+                <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
 
-                <div className="analysis-loader">
-                  <i></i>
+                <h3>Анализируем пространство</h3>
+
+                <div className="analysis-progress-circle">
+                  <svg viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52"></circle>
+
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="52"
+                      className="active"
+                      style={{
+                        strokeDashoffset:
+                          327 - (327 * analysisProgress) / 100,
+                      }}
+                    ></circle>
+                  </svg>
+
+                  <div>
+                    <b>{analysisProgress}%</b>
+                    <span>анализ</span>
+                  </div>
                 </div>
 
-                <div className="analysis-steps">
-                  <span>Сопоставляем объект и задачу</span>
-                  <span>Подбираем атмосферу и уровень реализации</span>
-                  <span>Формируем рекомендованный сценарий</span>
+                <div className="analysis-live">
+                  {analysisMessages.map((item, index) => (
+                    <p key={index}>
+                      <i></i>
+                      {item}
+                    </p>
+                  ))}
                 </div>
               </div>
             ) : !result ? (
@@ -351,7 +417,8 @@ export default function Constructor() {
             <form className={result ? "lead-form active" : "lead-form"}>
               <h3>Оставьте контакт</h3>
               <p>
-                Специалист перезвонит, уточнит детали и подскажет следующий шаг.
+                Специалист перезвонит, уточнит детали и подскажет следующий
+                шаг.
               </p>
 
               <input
