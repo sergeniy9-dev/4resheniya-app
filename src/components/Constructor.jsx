@@ -221,7 +221,8 @@ export default function Constructor() {
               <div className="analysis-screen">
                 <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
 
-                <h3>Анализируем пространство</h3>
+<h3>Анализируем пространство</h3>
+
 
                 <div className="analysis-progress-circle">
                   <svg viewBox="0 0 120 120">

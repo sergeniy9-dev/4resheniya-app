@@ -1,3 +1,22 @@
+:root {
+  --bg-main: #080808;
+
+  --sand: #d8c7a3;
+  --sand-soft: #cdbb96;
+  --sand-muted: rgba(216, 199, 163, 0.72);
+
+  --gold: #d7a84b;
+  --gold-soft: #c8963e;
+
+  --panel: rgba(255,255,255,0.03);
+  --panel-border: rgba(215,168,75,0.12);
+
+  --shadow-gold:
+    0 0 24px rgba(215,168,75,0.14);
+
+  --transition:
+    0.45s cubic-bezier(.19,1,.22,1);
+}
 html,
 body,
 #root {
@@ -38,4 +57,19 @@ a {
 
 * {
   box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--sand);
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }

@@ -5,7 +5,7 @@
 body {
   margin: 0;
   background: #050505;
-  color: white;
+  color: #d8c7a3;
   font-family: "Manrope", sans-serif;
 }
 
@@ -163,7 +163,7 @@ nav a {
 .hero h1 span {
   display: block;
 
-  color: rgba(255,255,255,.65);
+  color: rgba(216,199,163,.62);
 }
 
 .hero-text {
@@ -171,7 +171,7 @@ nav a {
 
   margin-top: 28px;
 
-  color: rgba(255,255,255,.68);
+  color: rgba(216,199,163,.68);
 
   font-size: 20px;
 
@@ -201,19 +201,24 @@ nav a {
 .primary {
   border: 0;
 
-  background: white;
+  background:
+    linear-gradient(
+      180deg,
+      #f0d49a,
+      #c7a55a
+    );
 
-  color: black;
+  color: #16110a;
 
   font-weight: 700;
 }
 
 .secondary {
-  border: 1px solid rgba(255,255,255,.12);
+  border: 1px solid rgba(199,165,90,.14);
 
-  background: rgba(255,255,255,.05);
+  background: rgba(255,255,255,.03);
 
-  color: white;
+  color: #d8c7a3;
 }
 
 @media(max-width:900px) {
