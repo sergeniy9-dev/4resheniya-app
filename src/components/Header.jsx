@@ -14,7 +14,7 @@ export default function Header() {
         <a href="#about">О компании</a>
         <a href="#services">Услуги</a>
         <a href="#constructor">Карта решений</a>
-        <a href="#contacts">Контакты</a>
+        <a href="https://yandex.ru/maps/-/CPg-4B8a">Контакты</a>
       </nav>
 
       <div className="header-actions">
