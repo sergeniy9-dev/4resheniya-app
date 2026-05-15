@@ -218,44 +218,58 @@ export default function Constructor() {
         <div className="constructor-layout">
           <div className="constructor-main reveal-item reveal-2">
             {analyzing ? (
-              <div className="analysis-screen">
-                <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
+  <div className="analysis-screen analysis-premium">
+    <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
 
-<h3>Анализируем пространство</h3>
+    <h3>Анализируем выбранные сценарии</h3>
 
+    <div className="analysis-premium-layout">
+      <div className="analysis-progress-circle">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52"></circle>
+          <circle
+            cx="60"
+            cy="60"
+            r="52"
+            className="active"
+            style={{
+              strokeDashoffset: 327 - (327 * analysisProgress) / 100,
+            }}
+          ></circle>
+        </svg>
 
-                <div className="analysis-progress-circle">
-                  <svg viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="52"></circle>
+        <div>
+          <b>{analysisProgress}%</b>
+          <span>анализ</span>
+        </div>
+      </div>
 
-                    <circle
-                      cx="60"
-                      cy="60"
-                      r="52"
-                      className="active"
-                      style={{
-                        strokeDashoffset:
-                          327 - (327 * analysisProgress) / 100,
-                      }}
-                    ></circle>
-                  </svg>
+      <div className="analysis-premium-steps">
+        {analysisMessages.map((item, index) => (
+          <div className="analysis-premium-step" key={index}>
+            <i>{index + 1}</i>
+            <p>{item}</p>
+          </div>
+        ))}
+      </div>
+    </div>
 
-                  <div>
-                    <b>{analysisProgress}%</b>
-                    <span>анализ</span>
-                  </div>
-                </div>
+    <div className="analysis-console">
+      <b>Формируем карту решений...</b>
 
-                <div className="analysis-live">
-                  {analysisMessages.map((item, index) => (
-                    <p key={index}>
-                      <i></i>
-                      {item}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ) : !result ? (
+      {analysisMessages.map((item, index) => (
+        <span key={index}>
+          {new Date().toLocaleTimeString("ru-RU", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })}{" "}
+          &gt; {item}
+        </span>
+      ))}
+    </div>
+  </div>
+) : !result ? (
               <div className="step-screen" key={step}>
                 <div className="constructor-head">
                   <div>
