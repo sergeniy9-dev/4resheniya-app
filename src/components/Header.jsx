@@ -6,15 +6,30 @@ export default function Header() {
 
   return (
     <header className="header">
-      <a href="#" className="header-logo">
+      <a href="#" className="header-logo" aria-label="4 Решения">
         <img src="/brand/logo.png" alt="4 Решения" />
       </a>
 
       <nav className="header-nav">
-        <a href="#about">О компании</a>
-        <a href="#services">Услуги</a>
-        <a href="#constructor">Карта решений</a>
-        <a href="https://yandex.ru/maps/-/CPg-4B8a">Контакты</a>
+        <a href="#about">
+          <i>▥</i>
+          <span>О компании</span>
+        </a>
+
+        <a href="#services">
+          <i>◠</i>
+          <span>Услуги</span>
+        </a>
+
+        <a href="#constructor">
+          <i>▱</i>
+          <span>Карта решений</span>
+        </a>
+
+        <a href="#contacts">
+          <i>☎</i>
+          <span>Контакты</span>
+        </a>
       </nav>
 
       <div className="header-actions">
@@ -27,7 +42,7 @@ export default function Header() {
           className="header-button"
           onClick={() => setContactsOpen((prev) => !prev)}
         >
-          Обсудить проект
+          Обсудить проект <em>→</em>
         </button>
 
         {contactsOpen && (
@@ -45,7 +60,11 @@ export default function Header() {
                 <b>Телефон</b>
                 <small>Позвонить сейчас</small>
               </a>
-
+            <a href="#" target="_blank" rel="noreferrer">
+                <i>◆</i>
+                <b>MAX</b>
+            <small>Связь в мессенджере</small>
+            </a>
               <a href="https://t.me/USERNAME" target="_blank" rel="noreferrer">
                 <i>✈</i>
                 <b>Telegram</b>
@@ -57,23 +76,15 @@ export default function Header() {
                 <b>WhatsApp</b>
                 <small>Быстрый вопрос</small>
               </a>
-
+            <a href="https://instagram.com/USERNAME" target="_blank" rel="noreferrer">
+  <i>◎</i>
+  <b>Instagram</b>
+  <small>Кейсы и визуал</small>
+            </a>
               <a href="mailto:info@4resheniya.ru">
                 <i>✉</i>
                 <b>Почта</b>
                 <small>Отправить письмо</small>
-              </a>
-
-              <a href="https://instagram.com/USERNAME" target="_blank" rel="noreferrer">
-                <i>◎</i>
-                <b>Instagram</b>
-                <small>Кейсы и визуал</small>
-              </a>
-
-              <a href="#" target="_blank" rel="noreferrer">
-                <i>◆</i>
-                <b>MAX</b>
-                <small>Связь в мессенджере</small>
               </a>
             </div>
           </div>
