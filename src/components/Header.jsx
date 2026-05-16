@@ -11,10 +11,7 @@ export default function Header() {
       </a>
 
       <nav className="header-nav">
-        <a href="#about">
-          <i>▥</i>
-          <span>О компании</span>
-        </a>
+        <a href="#top"><i>▥</i><span>О компании</span></a>
 
         <a href="#services">
           <i>◠</i>
@@ -33,8 +30,8 @@ export default function Header() {
       </nav>
 
       <div className="header-actions">
-        <a href="tel:+79999999999" className="header-phone">
-          +7 (999) 999-99-99
+        <a href="tel:+7 (495) 532-26-17" className="header-phone">
+          +7 (495) 532-26-17
         </a>
 
         <button
