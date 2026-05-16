@@ -5,6 +5,7 @@ import Services from "./components/Services";
 import useSmoothScroll from "./hooks/useSmoothScroll";
 import useReveal from "./hooks/useReveal";
 import Contacts from "./components/Contacts";
+import Projects from "./components/Projects";
 
 export default function App() {
   useReveal();
@@ -13,6 +14,7 @@ export default function App() {
     <>
       <Header />
       <Hero />
+      <Projects />
       <Services />
       <Constructor />
       <Contacts />
