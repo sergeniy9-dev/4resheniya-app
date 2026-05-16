@@ -1,6 +1,28 @@
 import "../styles/contacts.css";
+import { useState } from "react";
+import { sendLeadToCRM } from "../services/leadService";
 
 export default function Contacts() {
+    const [form, setForm] = useState({
+  name: "",
+  contact: "",
+});
+
+async function handleSubmit() {
+  if (!form.name || !form.contact) {
+    alert("Укажите имя и телефон.");
+    return;
+  }
+
+  await sendLeadToCRM({
+    source: "Форма консультации",
+    name: form.name,
+    contact: form.contact,
+    message: "Пользователь нажал Получить консультацию",
+  });
+
+  alert("Заявка отправлена. Мы свяжемся с вами.");
+}
   return (
     <section id="contacts" className="contacts reveal">
       <div className="contacts-wrap">
@@ -56,15 +78,29 @@ export default function Contacts() {
           <form>
             <label>
               Укажите имя
-              <input placeholder="Ваше имя" />
+              <input
+  placeholder="Ваше имя"
+  value={form.name}
+  onChange={(e) =>
+    setForm((prev) => ({ ...prev, name: e.target.value }))
+  }
+/>
             </label>
 
             <label>
               Укажите телефон
-              <input placeholder="+7 (000) 000-00-00" />
+              <input
+  placeholder="+7 (000) 000-00-00"
+  value={form.contact}
+  onChange={(e) =>
+    setForm((prev) => ({ ...prev, contact: e.target.value }))
+  }
+/>
             </label>
 
-            <button type="button">Получить консультацию</button>
+           <button type="button" onClick={handleSubmit}>
+  Получить консультацию
+</button>
           </form>
         </div>
       </div>
