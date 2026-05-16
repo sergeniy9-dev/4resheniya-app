@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/header.css";
+import { trackEvent, trackImportantEvent } from "../services/analyticsService";
 
 export default function Header() {
   const [contactsOpen, setContactsOpen] = useState(false);
@@ -35,12 +36,18 @@ export default function Header() {
         </a>
 
         <button
-          type="button"
-          className="header-button"
-          onClick={() => setContactsOpen((prev) => !prev)}
-        >
-          Обсудить проект <em>→</em>
-        </button>
+  type="button"
+  className="header-button"
+  onClick={() => {
+    setContactsOpen((prev) => !prev);
+
+    trackImportantEvent("open_contacts_popover", {
+      place: "header",
+    });
+  }}
+>
+  Обсудить проект <em>→</em>
+</button>
 
         {contactsOpen && (
           <div className="contact-popover">
