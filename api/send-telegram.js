@@ -21,13 +21,7 @@ export default async function handler(req, res) {
     `Имя: ${lead.name || "—"}`,
     `Контакт: ${lead.contact || "—"}`,
     "",
-    `Объект: ${lead.object || "—"}`,
-    `Приоритет: ${lead.priority || "—"}`,
-    `Атмосфера: ${lead.mood || "—"}`,
-    `Уровень: ${lead.level || "—"}`,
-    "",
-    `Рекомендация: ${lead.recommendation || "—"}`,
-    `Страница: ${lead.page || "—"}`,
+    `Заявка упала с получите консультацию `
   ].join("\n");
 
   const tgResponse = await fetch(
