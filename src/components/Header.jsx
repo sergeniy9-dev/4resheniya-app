@@ -1,13 +1,15 @@
 import { useState } from "react";
 import "../styles/header.css";
-import { trackEvent, trackImportantEvent } from "../services/analyticsService";
+import {
+  trackContactClick,
+  trackOpenContacts,
+} from "../services/analyticsService";
 import {
   Building2,
   Hammer,
   Layers3,
   PhoneCall,
 } from "lucide-react";
-
 
 export default function Header() {
   const [contactsOpen, setContactsOpen] = useState(false);
@@ -58,10 +60,7 @@ export default function Header() {
   className="header-button"
   onClick={() => {
     setContactsOpen((prev) => !prev);
-
-    trackImportantEvent("open_contacts_popover", {
-      place: "header",
-    });
+    trackOpenContacts("header");
   }}
 >
   Обсудить проект <em>→</em>
@@ -77,37 +76,60 @@ export default function Header() {
             </div>
 
             <div className="contact-grid">
-              <a href="tel:+79999999999">
-                <i>☎</i>
-                <b>Телефон</b>
-                <small>Позвонить сейчас</small>
-              </a>
-            <a href="#" target="_blank" rel="noreferrer">
-                <i>◆</i>
-                <b>MAX</b>
-            <small>Связь в мессенджере</small>
-            </a>
-              <a href="https://t.me/USERNAME" target="_blank" rel="noreferrer">
-                <i>✈</i>
-                <b>Telegram</b>
-                <small>Написать в чат</small>
-              </a>
+              <a
+  href="tel:+74955322617"
+  className="header-phone"
+  onClick={() => trackContactClick("phone", "header")}
+>
+  +7 (495) 532-26-17
+</a>
+            <a
+  href="tel:+74955322617"
+  onClick={() => trackContactClick("phone", "header_popover")}
+>
+  <i>☎</i><b>Телефон</b><small>Позвонить сейчас</small>
+</a>
 
-              <a href="https://wa.me/79999999999" target="_blank" rel="noreferrer">
-                <i>☘</i>
-                <b>WhatsApp</b>
-                <small>Быстрый вопрос</small>
-              </a>
-            <a href="https://instagram.com/USERNAME" target="_blank" rel="noreferrer">
-  <i>◎</i>
-  <b>Instagram</b>
-  <small>Кейсы и визуал</small>
-            </a>
-              <a href="mailto:info@4resheniya.ru">
-                <i>✉</i>
-                <b>Почта</b>
-                <small>Отправить письмо</small>
-              </a>
+<a
+  href="https://t.me/USERNAME"
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => trackContactClick("telegram", "header_popover")}
+>
+  <i>✈</i><b>Telegram</b><small>Написать в чат</small>
+</a>
+
+<a
+  href="https://wa.me/74955322617"
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => trackContactClick("whatsapp", "header_popover")}
+>
+  <i>☘</i><b>WhatsApp</b><small>Быстрый вопрос</small>
+</a>
+
+<a
+  href="mailto:info@4solutions.ru"
+  onClick={() => trackContactClick("email", "header_popover")}
+>
+  <i>✉</i><b>Почта</b><small>Отправить письмо</small>
+</a>
+
+<a
+  href="https://instagram.com/USERNAME"
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => trackContactClick("instagram", "header_popover")}
+>
+  <i>◎</i><b>Instagram</b><small>Кейсы и визуал</small>
+</a>
+
+<a
+  href="#"
+  onClick={() => trackContactClick("max", "header_popover")}
+>
+  <i>◆</i><b>MAX</b><small>Связь в мессенджере</small>
+</a>
             </div>
           </div>
         )}

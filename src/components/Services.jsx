@@ -1,6 +1,10 @@
 import { useState } from "react";
 import "../styles/services.css";
 import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackServiceOpen,
+  trackServiceLead,
+} from "../services/analyticsService";
 
 const services = [
   {
@@ -60,7 +64,19 @@ const services = [
 export default function Services() {
   const [activeService, setActiveService] = useState(null);
 
+  function toggleService(item) {
+    const nextValue = activeService === item.number ? null : item.number;
+
+    setActiveService(nextValue);
+
+    if (nextValue) {
+      trackServiceOpen(item.title);
+    }
+  }
+
   async function handleServiceLead(item) {
+    trackServiceLead(item.title);
+
     await sendLeadToCRM({
       source: "Интерес к услуге",
       name: "Пользователь сайта",
@@ -89,17 +105,13 @@ export default function Services() {
         <div className="services-grid">
           {services.map((item) => (
             <article
+              key={item.number}
               className={
                 activeService === item.number
                   ? "service-card service-card-open"
                   : "service-card"
               }
-              key={item.number}
-              onClick={() =>
-                setActiveService(
-                  activeService === item.number ? null : item.number
-                )
-              }
+              onClick={() => toggleService(item)}
             >
               <span>{item.number}</span>
 
@@ -111,12 +123,11 @@ export default function Services() {
                 className="service-arrow"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setActiveService(
-                    activeService === item.number ? null : item.number
-                  );
+                  toggleService(item);
                 }}
+                aria-label={`Подробнее: ${item.title}`}
               >
-                {activeService === item.number ? "→" : "→"}
+                →
               </button>
 
               {activeService === item.number && (

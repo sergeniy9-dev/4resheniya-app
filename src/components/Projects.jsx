@@ -1,4 +1,5 @@
 import "../styles/projects.css";
+import { trackProjectClick } from "../services/analyticsService";
 
 const projects = [
   {
@@ -57,7 +58,10 @@ export default function Projects() {
                   ))}
                 </p>
 
-                <button type="button">
+                <button
+                  type="button"
+                  onClick={() => trackProjectClick(item.title)}
+                >
                   Смотреть проект
                   <i>→</i>
                 </button>

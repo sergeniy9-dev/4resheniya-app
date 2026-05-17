@@ -1,8 +1,9 @@
 import "../styles/hero.css";
+import { trackMainCta } from "../services/analyticsService";
 
 export default function Hero() {
   return (
-    <section className="hero">
+    <section id="top" className="hero">
       <div className="hero-overlay"></div>
 
       <div className="hero-brand-bg">
@@ -24,7 +25,11 @@ export default function Hero() {
           под ключ в Москве и МО
         </p>
 
-        <a href="#constructor" className="hero-button">
+        <a
+          href="#constructor"
+          className="hero-button"
+          onClick={() => trackMainCta("hero_constructor")}
+        >
           Получить карту решений
         </a>
       </div>

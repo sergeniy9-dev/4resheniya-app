@@ -1,8 +1,16 @@
 import { useState } from "react";
 import "../styles/about.css";
+import { trackAboutOpen, trackMainCta } from "../services/analyticsService";
 
 export default function About() {
   const [opened, setOpened] = useState(false);
+
+  function handleToggle() {
+    const nextValue = !opened;
+
+    setOpened(nextValue);
+    trackAboutOpen(nextValue);
+  }
 
   return (
     <section id="about" className="about reveal">
@@ -18,14 +26,11 @@ export default function About() {
             </h2>
 
             <p>
-              Проектируем, строим и комплектуем объекты,
-где каждая деталь подчинена общей логике пространства.
+              Проектируем, строим и комплектуем объекты, где каждая деталь
+              подчинена общей логике пространства.
             </p>
 
-            <button
-              className="about-open-button"
-              onClick={() => setOpened(!opened)}
-            >
+            <button className="about-open-button" onClick={handleToggle}>
               {opened ? "Скрыть информацию" : "Подробнее о компании"}
             </button>
           </div>
@@ -65,9 +70,8 @@ export default function About() {
               </h3>
 
               <p>
-                Каждый объект собирается как цельная система —
-                от архитектуры и инженерии
-                до материалов, света и финальной реализации.
+                Каждый объект собирается как цельная система — от архитектуры и
+                инженерии до материалов, света и финальной реализации.
               </p>
 
               <div className="about-list">
@@ -80,23 +84,26 @@ export default function About() {
               <div className="about-stats">
                 <div>
                   <strong>Москва и МО</strong>
-                  <span>   основной регион работы</span>
+                  <span>основной регион работы</span>
                 </div>
 
                 <div>
                   <strong>Архитектурный</strong>
-                  <span>   подход к реализации</span>
+                  <span>подход к реализации</span>
                 </div>
 
                 <div>
                   <strong>Полный цикл</strong>
-                  <span>   от концепции до сдачи</span>
+                  <span>от концепции до сдачи</span>
                 </div>
               </div>
 
-              <></><a href="#contacts" className="about-contact-button">
-                                  <strong>Обсудить проект</strong>
-
+              <a
+                href="#contacts"
+                className="about-contact-button"
+                onClick={() => trackMainCta("about_section")}
+              >
+                <strong>Обсудить проект</strong>
               </a>
             </div>
           </div>
