@@ -1,6 +1,13 @@
 import { useState } from "react";
 import "../styles/header.css";
 import { trackEvent, trackImportantEvent } from "../services/analyticsService";
+import {
+  Building2,
+  Hammer,
+  Layers3,
+  PhoneCall,
+} from "lucide-react";
+
 
 export default function Header() {
   const [contactsOpen, setContactsOpen] = useState(false);
@@ -12,23 +19,34 @@ export default function Header() {
       </a>
 
       <nav className="header-nav">
-        <a href="#top"><i>▥</i><span>О компании</span></a>
+  <a href="#about">
+    <i>
+      <Building2 size={15} strokeWidth={2.2} />
+    </i>
+    О компании
+  </a>
 
-        <a href="#services">
-          <i>◠</i>
-          <span>Услуги</span>
-        </a>
+  <a href="#services">
+    <i>
+      <Hammer size={15} strokeWidth={2.2} />
+    </i>
+    Услуги
+  </a>
 
-        <a href="#constructor">
-          <i>▱</i>
-          <span>Карта решений</span>
-        </a>
+  <a href="#constructor">
+    <i>
+      <Layers3 size={15} strokeWidth={2.2} />
+    </i>
+    Карта решений
+  </a>
 
-        <a href="#contacts">
-          <i>☎</i>
-          <span>Контакты</span>
-        </a>
-      </nav>
+  <a href="#contacts">
+    <i>
+      <PhoneCall size={15} strokeWidth={2.2} />
+    </i>
+    Контакты
+  </a>
+</nav>
 
       <div className="header-actions">
         <a href="tel:+7 (495) 532-26-17" className="header-phone">

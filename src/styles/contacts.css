@@ -169,3 +169,56 @@
   color: #f0d49a;
   text-shadow: 0 0 18px rgba(215, 168, 75, 0.22);
 }
+.contacts-form {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  padding: 54px;
+  border-radius: 36px;
+  border: 1px solid rgba(215,168,75,.14);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.018)
+    );
+
+  backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 34px 100px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.contacts-form::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.72) 0%,
+      rgba(0,0,0,.42) 48%,
+      rgba(0,0,0,.66) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(215,168,75,.08),
+      transparent 34%
+    ),
+    url("/services/contact-bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+  opacity: .68;
+
+  filter:
+    saturate(1.08)
+    brightness(.95);
+
+  pointer-events: none;
+  z-index: -1;
+}
