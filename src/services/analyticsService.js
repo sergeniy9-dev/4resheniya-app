@@ -1,4 +1,5 @@
-const METRIKA_ID = Number(import.meta.env.VITE_YANDEX_METRIKA_ID);
+const METRIKA_ID =
+  Number(import.meta.env.VITE_YANDEX_METRIKA_ID) || 109267393;
 
 function getDeviceType() {
   if (typeof window === "undefined") return "unknown";
@@ -29,8 +30,9 @@ export function trackEvent(eventName, payload = {}) {
   window.dataLayer.push(event);
 
   if (METRIKA_ID && window.ym) {
-    window.ym(METRIKA_ID, "reachGoal", eventName, payload);
-  }
+  window.ym(METRIKA_ID, "reachGoal", eventName, payload);
+  console.log("YM goal sent:", eventName, payload);
+}
 
   return event;
 }
