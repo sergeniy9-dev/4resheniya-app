@@ -5,6 +5,8 @@ import {
   trackLead,
   trackContactClick,
 } from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
 
 export default function Contacts() {
   const [form, setForm] = useState({
@@ -41,44 +43,38 @@ export default function Contacts() {
     <section id="contacts" className="contacts reveal">
       <div className="contacts-wrap">
         <aside className="contacts-info">
-          <p className="eyebrow">КОНТАКТЫ</p>
-
-          <a
-            href="tel:+74955322617"
-            className="contacts-phone"
-            onClick={() => trackContactClick("phone", "contacts_section")}
-          >
-            +7 495 532-26-17
-          </a>
-
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
           <div className="contacts-socials">
-            <a
-              href="https://instagram.com/USERNAME"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => trackContactClick("instagram", "contacts_section")}
-            >
-              ◎
-            </a>
+  <a
+    href="https://max.ru/USERNAME"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+    onClick={() => trackContactClick("max", "contacts_section")}
+  >
+    <MessageCircle size={24} strokeWidth={2.4} />
+  </a>
 
-            <a
-              href="https://wa.me/74955322617"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => trackContactClick("whatsapp", "contacts_section")}
-            >
-              ☘
-            </a>
+  <a
+    href="https://t.me/USERNAME"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Telegram"
+    onClick={() => trackContactClick("telegram", "contacts_section")}
+  >
+    <Send size={24} strokeWidth={2.4} />
+  </a>
 
-            <a
-              href="https://t.me/USERNAME"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => trackContactClick("telegram", "contacts_section")}
-            >
-              ✈
-            </a>
-          </div>
+  <a
+    href="https://instagram.com/USERNAME"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Instagram"
+    onClick={() => trackContactClick("instagram", "contacts_section")}
+  >
+    <Camera size={24} strokeWidth={2.4} />
+  </a>
+</div>
 
           <div className="contacts-company">
             <p>ООО «ЧЕТЫРЕ РЕШЕНИЯ»</p>
@@ -155,8 +151,20 @@ export default function Contacts() {
             </label>
 
             <button type="button" onClick={handleSubmit}>
-              Получить консультацию
-            </button>
+  Получить консультацию
+</button>
+
+<small className="form-consent">
+  Нажимая кнопку, вы соглашаетесь с{" "}
+  <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+    политикой конфиденциальности
+  </a>{" "}
+  и{" "}
+  <a href="/docs/user-agreement.pdf" target="_blank" rel="noreferrer">
+    пользовательским соглашением
+  </a>
+  .
+</small>
           </form>
         </div>
       </div>

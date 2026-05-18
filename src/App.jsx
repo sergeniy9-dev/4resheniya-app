@@ -7,12 +7,16 @@ import useReveal from "./hooks/useReveal";
 import Contacts from "./components/Contacts";
 import Projects from "./components/Projects";
 import About from "./components/About";
+import ConsentBanner from "./components/ConsentBanner";
+
+
 
 export default function App() {
   useReveal();
   useSmoothScroll();
   return (
     <>
+          <ConsentBanner />
       <Header />
       <Hero />
        <About />

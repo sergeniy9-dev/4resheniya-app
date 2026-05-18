@@ -32,14 +32,35 @@
 .contacts-socials a {
   width: 58px;
   height: 58px;
-  display: grid;
-  place-items: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 50%;
-  background: #f0d49a;
-  color: #111;
+
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,.38), transparent 62%),
+    linear-gradient(180deg, #f0d49a, #c7a55a);
+
+  color: #14100a;
   text-decoration: none;
-  font-size: 26px;
-  font-weight: 800;
+
+  box-shadow:
+    0 14px 34px rgba(199,165,90,.18),
+    inset 0 1px 0 rgba(255,255,255,.38);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease;
+}
+
+.contacts-socials a:hover {
+  transform: translateY(-3px) scale(1.04);
+
+  box-shadow:
+    0 20px 44px rgba(199,165,90,.28),
+    0 0 26px rgba(215,168,75,.18);
 }
 
 .contacts-company,

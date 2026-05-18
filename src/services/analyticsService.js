@@ -69,10 +69,7 @@ export function trackServiceLead(serviceName) {
 }
 
 export function trackConstructorSelect(step, value) {
-  return trackEvent("constructor_select", {
-    step,
-    value,
-  });
+  return trackConstructorSelect(current.key, value);
 }
 
 export function trackConstructorCompleted(payload = {}) {

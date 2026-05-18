@@ -463,8 +463,17 @@ export default function Constructor() {
                 </div>
               )}
 
-              <small>Выбор из конструктора будет передан в CRM.</small>
-            </form>
+<small className="form-consent">
+  Нажимая кнопку, вы соглашаетесь с{" "}
+  <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+    политикой конфиденциальности
+  </a>{" "}
+  и{" "}
+  <a href="/docs/user-agreement.pdf" target="_blank" rel="noreferrer">
+    пользовательским соглашением
+  </a>
+  .
+</small>            </form>
           </aside>
         </div>
       </div>

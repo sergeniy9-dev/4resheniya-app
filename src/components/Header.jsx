@@ -76,13 +76,7 @@ export default function Header() {
             </div>
 
             <div className="contact-grid">
-              <a
-  href="tel:+74955322617"
-  className="header-phone"
-  onClick={() => trackContactClick("phone", "header")}
->
-  +7 (495) 532-26-17
-</a>
+              
             <a
   href="tel:+74955322617"
   onClick={() => trackContactClick("phone", "header_popover")}
