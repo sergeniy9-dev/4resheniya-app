@@ -85,7 +85,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://t.me/USERNAME"
+  href="https://t.me/"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("telegram", "header_popover")}
@@ -94,7 +94,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://wa.me/74955322617"
+  href="https://wa.me/"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("whatsapp", "header_popover")}
@@ -110,7 +110,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://instagram.com/USERNAME"
+  href="https://instagram.com/"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("instagram", "header_popover")}
@@ -119,7 +119,7 @@ export default function Header() {
 </a>
 
 <a
-  href="#"
+  href="https://max.ru"
   onClick={() => trackContactClick("max", "header_popover")}
 >
   <i>◆</i><b>MAX</b><small>Связь в мессенджере</small>
