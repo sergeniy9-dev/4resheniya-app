@@ -1,28 +1,42 @@
-export async function sendLeadToCRM(lead) {
-  console.log("Лид:", lead);
+function getUTM() {
+  const params = new URLSearchParams(window.location.search);
 
-  const response = await fetch("/api/send-telegram", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      source: lead.source || "Сайт",
-      name: lead.name || "Не указано",
-      contact: lead.contact || "Не указано",
-      message: lead.message || "",
-      object: lead.object || "",
-      priority: lead.priority || "",
-      mood: lead.mood || "",
-      level: lead.level || "",
-      recommendation: lead.recommendation || "",
-      previewImage: lead.previewImage || "",
-    }),
-  });
+  return {
+    source: params.get("utm_source"),
+    medium: params.get("utm_medium"),
+    campaign: params.get("utm_campaign"),
+    content: params.get("utm_content"),
+  };
+}
 
-  if (!response.ok) {
-    throw new Error("Не удалось отправить заявку");
+function getDeviceType() {
+  return window.innerWidth <= 760
+    ? "mobile"
+    : "desktop";
+}
+
+export async function sendLeadToCRM(data) {
+  try {
+    const response = await fetch("/api/lead", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        ...data,
+
+        page: window.location.href,
+
+        device: getDeviceType(),
+
+        utm: getUTM(),
+      }),
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Lead API error:", error);
   }
-
-  return response.json();
 }
