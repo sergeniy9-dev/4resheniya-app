@@ -85,7 +85,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://t.me/"
+  href="https://t.me/fouresolutions"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("telegram", "header_popover")}
@@ -110,7 +110,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://instagram.com/"
+  href="https://www.instagram.com/four__solutions"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("instagram", "header_popover")}

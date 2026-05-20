@@ -2,29 +2,10 @@
 
 declare(strict_types=1);
 
-$configPath = __DIR__ . '/config.php';
-
-if (!file_exists($configPath)) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'config.php not found',
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$config = require $configPath;
-
 header('Content-Type: application/json; charset=utf-8');
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
-if (!empty($config['ALLOWED_ORIGINS']) && in_array($origin, $config['ALLOWED_ORIGINS'], true)) {
-    header("Access-Control-Allow-Origin: {$origin}");
-}
-
+header('Access-Control-Allow-Origin: https://www.4-solutions.ru');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-Requested-With');
+header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -32,38 +13,100 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    jsonResponse(false, 'Method not allowed', [], 405);
+    jsonResponse(405, [
+        'success' => false,
+        'message' => 'Method not allowed',
+    ]);
 }
 
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
+$configPath = __DIR__ . '/config.php';
+
+if (!file_exists($configPath)) {
+    jsonResponse(500, [
+        'success' => false,
+        'message' => 'config.php not found',
+    ]);
+}
+
+$config = require $configPath;
+
+$timezone = $config['TIMEZONE'] ?? 'Europe/Moscow';
+date_default_timezone_set($timezone);
+
+$rawBody = file_get_contents('php://input');
+$data = json_decode($rawBody ?: '', true);
 
 if (!is_array($data)) {
-    jsonResponse(false, 'Invalid JSON', [], 400);
+    $data = $_POST;
 }
 
-$name = cleanText($data['name'] ?? '', 100);
-$phone = cleanPhone($data['phone'] ?? '');
-$email = cleanText($data['email'] ?? '', 120);
-$service = cleanText($data['service'] ?? '', 150);
-$message = cleanText($data['message'] ?? '', 1500);
-$formName = cleanText($data['formName'] ?? 'Форма сайта', 150);
-$channel = cleanText($data['channel'] ?? 'website_form', 100);
-$entryPoint = cleanText($data['entryPoint'] ?? '', 150);
-$page = cleanText($data['page'] ?? '', 500);
-$utm = is_array($data['utm'] ?? null) ? $data['utm'] : [];
+if (!is_array($data)) {
+    jsonResponse(400, [
+        'success' => false,
+        'message' => 'Invalid JSON',
+    ]);
+}
 
-if ($phone === '') {
-    jsonResponse(false, 'Телефон обязателен', [], 400);
+$name = cleanString($data['name'] ?? '');
+$rawContact = cleanString(
+    $data['contact']
+    ?? $data['phone']
+    ?? $data['phoneNumber']
+    ?? $data['telegram']
+    ?? $data['email']
+    ?? ''
+);
+
+$contactType = cleanString($data['contactType'] ?? $data['contact_type'] ?? '');
+if ($contactType === '') {
+    $contactType = detectContactType($rawContact);
+}
+
+$phone = '';
+if ($contactType === 'phone') {
+    $phone = normalizePhone($rawContact);
+}
+
+$email = cleanString($data['email'] ?? '');
+if ($email === '' && $contactType === 'email') {
+    $email = $rawContact;
+}
+
+if ($name === '' || $rawContact === '') {
+    jsonResponse(400, [
+        'success' => false,
+        'message' => 'Имя и контакт обязательны',
+    ]);
 }
 
 $requestId = bin2hex(random_bytes(8));
 
-$leadData = [
+$formName = cleanString($data['formName'] ?? $data['form_name'] ?? 'Форма сайта');
+$entryPoint = cleanString($data['entryPoint'] ?? $data['entry_point'] ?? '');
+$service = cleanString($data['service'] ?? '');
+$channel = cleanString($data['channel'] ?? 'website_form');
+$message = cleanString($data['message'] ?? '');
+$page = cleanString($data['page'] ?? ($_SERVER['HTTP_REFERER'] ?? ''));
+$device = cleanString($data['device'] ?? '');
+
+$utm = $data['utm'] ?? [];
+if (!is_array($utm)) {
+    $utm = [];
+}
+
+$record = [
     'request_id' => $requestId,
     'created_at' => date('c'),
+
     'name' => $name,
+
+    // phone — только настоящий телефон.
     'phone' => $phone,
+
+    // contact — то, что реально ввёл пользователь.
+    'contact' => $rawContact,
+    'contact_type' => $contactType,
+
     'email' => $email,
     'service' => $service,
     'message' => $message,
@@ -71,264 +114,452 @@ $leadData = [
     'channel' => $channel,
     'entry_point' => $entryPoint,
     'page' => $page,
-    'utm' => $utm,
-    'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
-    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+    'device' => $device,
+
+    'utm' => [
+        'utm_source' => cleanString($utm['utm_source'] ?? ''),
+        'utm_medium' => cleanString($utm['utm_medium'] ?? ''),
+        'utm_campaign' => cleanString($utm['utm_campaign'] ?? ''),
+        'utm_content' => cleanString($utm['utm_content'] ?? ''),
+        'utm_term' => cleanString($utm['utm_term'] ?? ''),
+    ],
+
+    // данные конструктора, если есть
+    'object' => cleanString($data['object'] ?? ''),
+    'priority' => cleanString($data['priority'] ?? ''),
+    'mood' => cleanString($data['mood'] ?? ''),
+    'level' => cleanString($data['level'] ?? ''),
+    'recommendation' => cleanString($data['recommendation'] ?? ''),
+    'preview_image' => cleanString($data['previewImage'] ?? $data['preview_image'] ?? ''),
+
+    'ip' => getClientIp(),
+    'user_agent' => cleanString($_SERVER['HTTP_USER_AGENT'] ?? ''),
 ];
 
-saveLog('incoming.log', $leadData);
+ensureLogDirectory();
+
+appendLog('incoming.log', $record);
+
+$crmSuccess = false;
+$crmId = null;
+$crmError = null;
+
+$telegramSuccess = false;
+$telegramError = null;
 
 try {
-    $fields = [
-        'TITLE' => buildTitle($service, $formName),
-        'NAME' => $name !== '' ? $name : 'Клиент с сайта',
-        'PHONE' => [
-            [
-                'VALUE' => $phone,
-                'VALUE_TYPE' => 'WORK',
-            ],
-        ],
-        'SOURCE_ID' => 'WEB',
-        'SOURCE_DESCRIPTION' => $channel,
-        'COMMENTS' => buildComments($leadData),
+    $crmResult = sendToBitrix($config, $record);
+    $crmSuccess = true;
+    $crmId = $crmResult['id'] ?? null;
+} catch (Throwable $error) {
+    $crmError = $error->getMessage();
+
+    appendLog('failed.log', array_merge($record, [
+        'error_type' => 'bitrix',
+        'error' => $crmError,
+    ]));
+}
+
+try {
+    $telegramSuccess = sendToTelegram($config, $record, $crmSuccess, $crmId, $crmError);
+} catch (Throwable $error) {
+    $telegramError = $error->getMessage();
+
+    appendLog('failed.log', array_merge($record, [
+        'error_type' => 'telegram',
+        'error' => $telegramError,
+    ]));
+}
+
+// ВАЖНО:
+// Если заявка сохранена в лог, пользователю возвращаем успех.
+// Даже если Bitrix временно не принял, заявка не потеряна.
+jsonResponse(200, [
+    'success' => true,
+    'message' => 'Заявка принята',
+    'request_id' => $requestId,
+    'crm_success' => $crmSuccess,
+    'crm_id' => $crmId,
+    'crm_error' => $crmError,
+    'telegram_success' => $telegramSuccess,
+    'telegram_error' => $telegramError,
+]);
+
+function cleanString(mixed $value): string
+{
+    if (is_array($value) || is_object($value)) {
+        return '';
+    }
+
+    return trim((string) $value);
+}
+
+function detectContactType(string $contact): string
+{
+    $contact = trim($contact);
+    $lower = mb_strtolower($contact);
+
+    if ($contact === '') {
+        return 'unknown';
+    }
+
+    if (str_starts_with($contact, '@') || str_contains($lower, 't.me/') || str_contains($lower, 'telegram')) {
+        return 'telegram';
+    }
+
+    if (str_contains($lower, 'wa.me/') || str_contains($lower, 'whatsapp')) {
+        return 'whatsapp';
+    }
+
+    if (str_contains($lower, 'instagram.com') || str_starts_with($lower, 'instagram')) {
+        return 'instagram';
+    }
+
+    if (filter_var($contact, FILTER_VALIDATE_EMAIL)) {
+        return 'email';
+    }
+
+    $digits = preg_replace('/\D+/', '', $contact);
+
+    if (strlen($digits) >= 10) {
+        return 'phone';
+    }
+
+    return 'other';
+}
+
+function normalizePhone(string $contact): string
+{
+    $contact = trim($contact);
+    $digits = preg_replace('/\D+/', '', $contact);
+
+    if (strlen($digits) < 10) {
+        return '';
+    }
+
+    if (strlen($digits) === 11 && str_starts_with($digits, '8')) {
+        return '+7' . substr($digits, 1);
+    }
+
+    if (strlen($digits) === 11 && str_starts_with($digits, '7')) {
+        return '+' . $digits;
+    }
+
+    if (str_starts_with($contact, '+')) {
+        return $contact;
+    }
+
+    return $digits;
+}
+
+function getClientIp(): string
+{
+    $keys = [
+        'HTTP_CF_CONNECTING_IP',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_REAL_IP',
+        'REMOTE_ADDR',
     ];
 
-    if ($email !== '') {
-        $fields['EMAIL'] = [
+    foreach ($keys as $key) {
+        if (!empty($_SERVER[$key])) {
+            $value = (string) $_SERVER[$key];
+
+            if ($key === 'HTTP_X_FORWARDED_FOR') {
+                $parts = explode(',', $value);
+                return trim($parts[0]);
+            }
+
+            return trim($value);
+        }
+    }
+
+    return '';
+}
+
+function getLogDir(): string
+{
+    return dirname(__DIR__) . '/storage/leads';
+}
+
+function ensureLogDirectory(): void
+{
+    $dir = getLogDir();
+
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+}
+
+function appendLog(string $fileName, array $data): void
+{
+    $path = getLogDir() . '/' . $fileName;
+
+    file_put_contents(
+        $path,
+        json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
+        FILE_APPEND | LOCK_EX
+    );
+}
+
+function sendToBitrix(array $config, array $record): array
+{
+    $webhook = trim((string) ($config['BITRIX_WEBHOOK'] ?? ''));
+
+    if ($webhook === '') {
+        throw new RuntimeException('Bitrix webhook is empty');
+    }
+
+    $webhook = rtrim($webhook, '/') . '/';
+    $url = $webhook . 'crm.lead.add.json';
+
+    $titleParts = [];
+
+    if ($record['service'] !== '') {
+        $titleParts[] = $record['service'];
+    }
+
+    if ($record['form_name'] !== '') {
+        $titleParts[] = $record['form_name'];
+    }
+
+    $title = 'Заявка с сайта';
+    if (!empty($titleParts)) {
+        $title .= ' — ' . implode(' / ', $titleParts);
+    }
+
+    $fields = [
+        'TITLE' => $title,
+        'NAME' => $record['name'],
+        'OPENED' => 'Y',
+        'SOURCE_ID' => 'WEB',
+        'SOURCE_DESCRIPTION' => '4-solutions.ru',
+        'COMMENTS' => buildBitrixComment($record),
+    ];
+
+    if (!empty($config['BITRIX_ASSIGNED_BY_ID'])) {
+        $fields['ASSIGNED_BY_ID'] = (int) $config['BITRIX_ASSIGNED_BY_ID'];
+    }
+
+    if ($record['phone'] !== '') {
+        $fields['PHONE'] = [
             [
-                'VALUE' => $email,
+                'VALUE' => $record['phone'],
                 'VALUE_TYPE' => 'WORK',
             ],
         ];
     }
 
-    if (!empty($config['ASSIGNED_BY_ID'])) {
-        $fields['ASSIGNED_BY_ID'] = (int)$config['ASSIGNED_BY_ID'];
+    if ($record['email'] !== '') {
+        $fields['EMAIL'] = [
+            [
+                'VALUE' => $record['email'],
+                'VALUE_TYPE' => 'WORK',
+            ],
+        ];
     }
 
-    addUtmFields($fields, $utm);
-
-    $bitrixResult = bitrixCall($config, 'crm.lead.add', [
+    $payload = [
         'fields' => $fields,
         'params' => [
             'REGISTER_SONET_EVENT' => 'Y',
         ],
-    ]);
+    ];
 
-    $leadId = $bitrixResult['result'] ?? null;
+    $result = httpPostJson($url, $payload);
 
-    if (!$leadId) {
-        throw new RuntimeException('Bitrix did not return lead ID');
+    if (!empty($result['error'])) {
+        $description = $result['error_description'] ?? $result['error'];
+        throw new RuntimeException('Bitrix error: ' . $description);
     }
 
-    sendTelegram($config, buildTelegramText($leadData, (int)$leadId));
-
-    jsonResponse(true, 'Заявка принята', [
-        'request_id' => $requestId,
-        'lead_id' => $leadId,
-    ]);
-
-} catch (Throwable $e) {
-    $errorData = $leadData;
-    $errorData['error'] = $e->getMessage();
-
-    saveLog('failed.log', $errorData);
-
-    sendTelegram(
-        $config,
-        "⚠️ Ошибка отправки заявки в Bitrix\n\nТелефон: {$phone}\nОшибка: " . $e->getMessage()
-    );
-
-    jsonResponse(false, 'Заявка сохранена, но CRM временно не приняла данные', [
-        'request_id' => $requestId,
-    ], 500);
-}
-
-function cleanText($value, int $limit): string
-{
-    $value = trim((string)$value);
-    $value = strip_tags($value);
-    return mb_substr($value, 0, $limit);
-}
-
-function cleanPhone($value): string
-{
-    $phone = trim((string)$value);
-    $phone = preg_replace('/[^\d\+\-\(\)\s]/u', '', $phone);
-    return mb_substr($phone, 0, 50);
-}
-
-function buildTitle(string $service, string $formName): string
-{
-    if ($service !== '') {
-        return 'Заявка с сайта — ' . $service;
+    if (!isset($result['result'])) {
+        throw new RuntimeException('Bitrix error: empty result');
     }
 
-    return 'Заявка с сайта — ' . $formName;
+    return [
+        'id' => $result['result'],
+        'raw' => $result,
+    ];
 }
 
-function buildComments(array $lead): string
+function buildBitrixComment(array $record): string
 {
-    $lines = [];
+    $lines = [
+        'Новая заявка с сайта 4-solutions.ru',
+        '',
+        'Имя: ' . valueOrDash($record['name']),
+        'Контакт: ' . valueOrDash($record['contact']),
+        'Тип контакта: ' . valueOrDash($record['contact_type']),
+    ];
 
-    $lines[] = 'Заявка с сайта';
-    $lines[] = '';
-    $lines[] = 'ID заявки: ' . $lead['request_id'];
-    $lines[] = 'Дата: ' . $lead['created_at'];
-    $lines[] = 'Форма: ' . ($lead['form_name'] ?: '-');
-    $lines[] = 'Канал: ' . ($lead['channel'] ?: '-');
-    $lines[] = 'Точка входа: ' . ($lead['entry_point'] ?: '-');
-    $lines[] = 'Услуга: ' . ($lead['service'] ?: '-');
-    $lines[] = 'Имя: ' . ($lead['name'] ?: '-');
-    $lines[] = 'Телефон: ' . ($lead['phone'] ?: '-');
-    $lines[] = 'Email: ' . ($lead['email'] ?: '-');
-    $lines[] = 'Комментарий клиента: ' . ($lead['message'] ?: '-');
-    $lines[] = 'Страница: ' . ($lead['page'] ?: '-');
+    if ($record['phone'] !== '') {
+        $lines[] = 'Телефон: ' . $record['phone'];
+    }
 
-    if (!empty($lead['utm'])) {
+    if ($record['email'] !== '') {
+        $lines[] = 'Email: ' . $record['email'];
+    }
+
+    $lines = array_merge($lines, [
+        '',
+        'Услуга: ' . valueOrDash($record['service']),
+        'Форма: ' . valueOrDash($record['form_name']),
+        'Канал: ' . valueOrDash($record['channel']),
+        'Точка входа: ' . valueOrDash($record['entry_point']),
+        'Страница: ' . valueOrDash($record['page']),
+        'Устройство: ' . valueOrDash($record['device']),
+    ]);
+
+    if ($record['message'] !== '') {
         $lines[] = '';
-        $lines[] = 'UTM-метки:';
-
-        foreach ($lead['utm'] as $key => $value) {
-            $lines[] = $key . ': ' . cleanText($value, 255);
-        }
+        $lines[] = 'Сообщение:';
+        $lines[] = $record['message'];
     }
 
-    $lines[] = '';
-    $lines[] = 'Техническая информация:';
-    $lines[] = 'IP: ' . ($lead['ip'] ?: '-');
-    $lines[] = 'User-Agent: ' . ($lead['user_agent'] ?: '-');
+    if (
+        $record['object'] !== ''
+        || $record['priority'] !== ''
+        || $record['mood'] !== ''
+        || $record['level'] !== ''
+        || $record['recommendation'] !== ''
+    ) {
+        $lines = array_merge($lines, [
+            '',
+            'Данные конструктора:',
+            'Объект: ' . valueOrDash($record['object']),
+            'Приоритет: ' . valueOrDash($record['priority']),
+            'Атмосфера: ' . valueOrDash($record['mood']),
+            'Уровень: ' . valueOrDash($record['level']),
+            'Рекомендация: ' . valueOrDash($record['recommendation']),
+        ]);
+    }
+
+    $lines = array_merge($lines, [
+        '',
+        'UTM:',
+        'utm_source: ' . valueOrDash($record['utm']['utm_source']),
+        'utm_medium: ' . valueOrDash($record['utm']['utm_medium']),
+        'utm_campaign: ' . valueOrDash($record['utm']['utm_campaign']),
+        'utm_content: ' . valueOrDash($record['utm']['utm_content']),
+        'utm_term: ' . valueOrDash($record['utm']['utm_term']),
+        '',
+        'IP: ' . valueOrDash($record['ip']),
+        'User-Agent: ' . valueOrDash($record['user_agent']),
+        'Request ID: ' . valueOrDash($record['request_id']),
+        'Дата: ' . valueOrDash($record['created_at']),
+    ]);
 
     return implode("\n", $lines);
 }
 
-function addUtmFields(array &$fields, array $utm): void
-{
-    $map = [
-        'utm_source' => 'UTM_SOURCE',
-        'utm_medium' => 'UTM_MEDIUM',
-        'utm_campaign' => 'UTM_CAMPAIGN',
-        'utm_content' => 'UTM_CONTENT',
-        'utm_term' => 'UTM_TERM',
-    ];
+function sendToTelegram(
+    array $config,
+    array $record,
+    bool $crmSuccess,
+    mixed $crmId,
+    ?string $crmError
+): bool {
+    $botToken = trim((string) ($config['TELEGRAM_BOT_TOKEN'] ?? ''));
+    $chatId = trim((string) ($config['TELEGRAM_CHAT_ID'] ?? ''));
 
-    foreach ($map as $from => $to) {
-        if (!empty($utm[$from])) {
-            $fields[$to] = cleanText($utm[$from], 255);
-        }
+    if ($botToken === '' || $chatId === '') {
+        return false;
     }
+
+    $crmText = $crmSuccess
+        ? '✅ CRM: заявка создана' . ($crmId ? ' #' . $crmId : '')
+        : '⚠️ CRM: не приняла заявку' . ($crmError ? "\nОшибка: {$crmError}" : '');
+
+    $text = implode("\n", [
+        '🟡 Новая заявка с сайта',
+        '',
+        'Имя: ' . valueOrDash($record['name']),
+        'Контакт: ' . valueOrDash($record['contact']),
+        'Тип контакта: ' . valueOrDash($record['contact_type']),
+        'Телефон: ' . valueOrDash($record['phone']),
+        '',
+        'Услуга: ' . valueOrDash($record['service']),
+        'Форма: ' . valueOrDash($record['form_name']),
+        'Точка входа: ' . valueOrDash($record['entry_point']),
+        '',
+        'Сообщение:',
+        valueOrDash($record['message']),
+        '',
+        $crmText,
+        '',
+        'Страница: ' . valueOrDash($record['page']),
+        'Request ID: ' . valueOrDash($record['request_id']),
+    ]);
+
+    $url = 'https://api.telegram.org/bot' . $botToken . '/sendMessage';
+
+    $result = httpPostJson($url, [
+        'chat_id' => $chatId,
+        'text' => $text,
+        'disable_web_page_preview' => true,
+    ]);
+
+    if (empty($result['ok'])) {
+        $description = $result['description'] ?? 'unknown telegram error';
+        throw new RuntimeException('Telegram error: ' . $description);
+    }
+
+    return true;
 }
 
-function bitrixCall(array $config, string $method, array $payload): array
+function httpPostJson(string $url, array $payload): array
 {
-    $url = rtrim($config['BITRIX_WEBHOOK'], '/') . '/' . $method . '.json';
-
     $ch = curl_init($url);
 
     curl_setopt_array($ch, [
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'Accept: application/json',
+            'Content-Type: application/json; charset=utf-8',
         ],
-        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
         CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_TIMEOUT => 25,
+        CURLOPT_TIMEOUT => 20,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
     ]);
 
     $response = curl_exec($ch);
-    $curlError = curl_error($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    curl_close($ch);
 
     if ($response === false) {
-        throw new RuntimeException('Bitrix curl error: ' . $curlError);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        throw new RuntimeException('Curl error: ' . $error);
     }
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
     $decoded = json_decode($response, true);
 
     if (!is_array($decoded)) {
-        throw new RuntimeException('Bitrix invalid response. HTTP ' . $httpCode . ': ' . $response);
-    }
-
-    if (isset($decoded['error'])) {
-        $description = $decoded['error_description'] ?? $decoded['error'];
-        throw new RuntimeException('Bitrix error: ' . $description);
+        throw new RuntimeException('Invalid JSON response, HTTP ' . $httpCode . ': ' . $response);
     }
 
     return $decoded;
 }
 
-function saveLog(string $fileName, array $data): void
+function valueOrDash(mixed $value): string
 {
-    $dir = __DIR__ . '/../storage/leads';
+    $value = cleanString($value);
+    return $value !== '' ? $value : '—';
+}
 
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
-    }
+function jsonResponse(int $statusCode, array $payload): never
+{
+    http_response_code($statusCode);
 
-    file_put_contents(
-        $dir . '/' . $fileName,
-        json_encode($data, JSON_UNESCAPED_UNICODE) . PHP_EOL,
-        FILE_APPEND | LOCK_EX
+    echo json_encode(
+        $payload,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
     );
-}
-
-function buildTelegramText(array $lead, int $leadId): string
-{
-    return
-        "🔥 Новая заявка с сайта\n\n" .
-        "Имя: " . ($lead['name'] ?: '-') . "\n" .
-        "Телефон: " . $lead['phone'] . "\n" .
-        "Услуга: " . ($lead['service'] ?: '-') . "\n" .
-        "Форма: " . ($lead['form_name'] ?: '-') . "\n" .
-        "Канал: " . ($lead['channel'] ?: '-') . "\n" .
-        "Страница: " . ($lead['page'] ?: '-') . "\n\n" .
-        "✅ Лид Bitrix ID: " . $leadId;
-}
-
-function sendTelegram(array $config, string $text): void
-{
-    $token = trim((string)($config['TELEGRAM_BOT_TOKEN'] ?? ''));
-    $chatId = trim((string)($config['TELEGRAM_CHAT_ID'] ?? ''));
-
-    if ($token === '' || $chatId === '') {
-        return;
-    }
-
-    $url = 'https://api.telegram.org/bot' . $token . '/sendMessage';
-
-    $payload = [
-        'chat_id' => $chatId,
-        'text' => $text,
-        'disable_web_page_preview' => true,
-    ];
-
-    $ch = curl_init($url);
-
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_TIMEOUT => 20,
-    ]);
-
-    curl_exec($ch);
-    curl_close($ch);
-}
-
-function jsonResponse(bool $success, string $message, array $extra = [], int $status = 200): void
-{
-    http_response_code($status);
-
-    echo json_encode(array_merge([
-        'success' => $success,
-        'message' => $message,
-    ], $extra), JSON_UNESCAPED_UNICODE);
 
     exit;
 }

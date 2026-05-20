@@ -20,14 +20,6 @@ function getUtm() {
   };
 }
 
-function getDevice() {
-  if (typeof window === "undefined") {
-    return "unknown";
-  }
-
-  return window.innerWidth <= 760 ? "mobile" : "desktop";
-}
-
 function getPageUrl() {
   if (typeof window === "undefined") {
     return "";
@@ -36,26 +28,103 @@ function getPageUrl() {
   return window.location.href;
 }
 
+function getDeviceType() {
+  if (typeof window === "undefined") {
+    return "unknown";
+  }
+
+  return window.innerWidth <= 760 ? "mobile" : "desktop";
+}
+
 function normalizeString(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function detectContactType(value) {
+  const contact = normalizeString(value);
+
+  if (!contact) {
+    return "unknown";
+  }
+
+  const lower = contact.toLowerCase();
+
+  if (contact.startsWith("@") || lower.includes("t.me/") || lower.includes("telegram")) {
+    return "telegram";
+  }
+
+  if (lower.includes("wa.me/") || lower.includes("whatsapp")) {
+    return "whatsapp";
+  }
+
+  if (lower.includes("instagram.com") || lower.startsWith("instagram")) {
+    return "instagram";
+  }
+
+  if (contact.includes("@") && contact.includes(".")) {
+    return "email";
+  }
+
+  const digits = contact.replace(/\D/g, "");
+
+  if (digits.length >= 10) {
+    return "phone";
+  }
+
+  return "other";
+}
+
+function normalizePhone(value) {
+  const contact = normalizeString(value);
+  const digits = contact.replace(/\D/g, "");
+
+  if (digits.length < 10) {
+    return "";
+  }
+
+  if (digits.length === 11 && digits.startsWith("8")) {
+    return `+7${digits.slice(1)}`;
+  }
+
+  if (digits.length === 11 && digits.startsWith("7")) {
+    return `+${digits}`;
+  }
+
+  if (contact.startsWith("+")) {
+    return contact;
+  }
+
+  return digits;
+}
+
 export async function sendLeadToCRM(data = {}) {
   const name = normalizeString(data.name);
-  const phone = normalizeString(data.phone || data.contact || data.phoneNumber);
+
+  const rawContact = normalizeString(
+    data.contact || data.phone || data.phoneNumber || data.telegram || data.email
+  );
+
+  const contactType = detectContactType(rawContact);
+  const phone = contactType === "phone" ? normalizePhone(rawContact) : "";
 
   const payload = {
     ...data,
 
-    // PHP ждёт именно phone
     name,
+
+    // ВАЖНО:
+    // phone заполняется только если это реально номер телефона.
     phone,
 
-    // Оставляем contact для совместимости со старой логикой
-    contact: normalizeString(data.contact) || phone,
+    // contact хранит то, что человек реально ввёл:
+    // телефон, Telegram, WhatsApp, email, ник и т.д.
+    contact: rawContact,
+
+    contactType,
+    contact_type: contactType,
 
     page: getPageUrl(),
-    device: getDevice(),
+    device: getDeviceType(),
     utm: getUtm(),
   };
 
@@ -78,35 +147,14 @@ export async function sendLeadToCRM(data = {}) {
 
   if (!response.ok || !result.success) {
     console.error("Lead API error:", result);
-
-    // Временная страховка:
-    // если заявка сохранена в лог, но Bitrix пока не принял из-за прав,
-    // не показываем пользователю падение формы.
-    const savedButCrmFailed =
-      response.status >= 500 &&
-      typeof result.message === "string" &&
-      result.message.includes("Заявка сохранена");
-
-    if (savedButCrmFailed) {
-      return {
-        ...result,
-        success: true,
-        crmSuccess: false,
-      };
-    }
-
     throw new Error(result.message || result.error || "Lead API error");
   }
 
   console.log("Lead created:", result);
 
-  return {
-    ...result,
-    crmSuccess: true,
-  };
+  return result;
 }
 
-// Дополнительный экспорт на случай, если где-то уже используется sendLead
 export const sendLead = sendLeadToCRM;
 
 export default sendLeadToCRM;
