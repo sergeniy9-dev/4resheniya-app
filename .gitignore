@@ -1,10 +1,12 @@
 node_modules
 dist
-.env
-.env.local
 .vscode
 .DS_Store
 *.exe
 *.crdownload
 .vercel
 .env*.local
+api/config.php
+storage/leads/*.log
+.env
+.env.local
