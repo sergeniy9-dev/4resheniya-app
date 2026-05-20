@@ -24,6 +24,8 @@ export default function Constructor() {
   const [analyzing, setAnalyzing] = useState(false);
   const [visible, setVisible] = useState(false);
   const [leadStatus, setLeadStatus] = useState(null);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysisMessages, setAnalysisMessages] = useState([
     "Подготавливаем систему анализа...",
@@ -169,7 +171,12 @@ export default function Constructor() {
   }
 
   async function handleLeadSubmit() {
-    if (!form.name || !form.contact) {
+    if (leadSubmitting) return;
+
+    const name = form.name.trim();
+    const contact = form.contact.trim();
+
+    if (!name || !contact) {
       setLeadStatus({
         title: "Заполните контакты",
         text: "Укажите имя и телефон или Telegram для связи.",
@@ -180,18 +187,58 @@ export default function Constructor() {
     }
 
     const lead = {
-      name: form.name,
-      contact: form.contact,
-      ...answers,
+      name,
+      phone: contact,
+      contact,
+
+      service: "Карта решений / Конструктор",
+      formName: "Форма справа от конструктора",
+      channel: "website_form",
+      entryPoint: "constructor_sidebar_after_result",
+
+      object: answers.object,
+      priority: answers.priority,
+      mood: answers.mood,
+      level: answers.level,
+
       recommendation,
       previewImage,
+
+      message: [
+        "Пользователь прошёл конструктор и оставил заявку.",
+        `Объект: ${answers.object || "-"}`,
+        `Приоритет: ${answers.priority || "-"}`,
+        `Атмосфера: ${answers.mood || "-"}`,
+        `Уровень: ${answers.level || "-"}`,
+        `Рекомендация: ${recommendation || "-"}`,
+      ].join("\n"),
     };
 
     trackEvent("lead_form_submit", lead);
 
-    await sendLeadToCRM(lead);
+    setLeadSubmitting(true);
+    setLeadStatus(null);
 
-    setLeadStatus(getLeadResponseMessage());
+    try {
+      await sendLeadToCRM(lead);
+
+      setLeadStatus(getLeadResponseMessage());
+
+      setForm({
+        name: "",
+        contact: "",
+      });
+    } catch (error) {
+      console.error("Constructor lead submit error:", error);
+
+      setLeadStatus({
+        title: "Заявка не отправилась",
+        text: "Попробуйте ещё раз или напишите нам в мессенджер.",
+        mode: "offline",
+      });
+    } finally {
+      setLeadSubmitting(false);
+    }
   }
 
   return (
@@ -218,58 +265,59 @@ export default function Constructor() {
         <div className="constructor-layout">
           <div className="constructor-main reveal-item reveal-2">
             {analyzing ? (
-  <div className="analysis-screen analysis-premium">
-    <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
+              <div className="analysis-screen analysis-premium">
+                <p className="eyebrow">ФОРМИРУЕМ КАРТУ</p>
 
-    <h3>Анализируем выбранные сценарии</h3>
+                <h3>Анализируем выбранные сценарии</h3>
 
-    <div className="analysis-premium-layout">
-      <div className="analysis-progress-circle">
-        <svg viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="52"></circle>
-          <circle
-            cx="60"
-            cy="60"
-            r="52"
-            className="active"
-            style={{
-              strokeDashoffset: 327 - (327 * analysisProgress) / 100,
-            }}
-          ></circle>
-        </svg>
+                <div className="analysis-premium-layout">
+                  <div className="analysis-progress-circle">
+                    <svg viewBox="0 0 120 120">
+                      <circle cx="60" cy="60" r="52"></circle>
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="52"
+                        className="active"
+                        style={{
+                          strokeDashoffset:
+                            327 - (327 * analysisProgress) / 100,
+                        }}
+                      ></circle>
+                    </svg>
 
-        <div>
-          <b>{analysisProgress}%</b>
-          <span>анализ</span>
-        </div>
-      </div>
+                    <div>
+                      <b>{analysisProgress}%</b>
+                      <span>анализ</span>
+                    </div>
+                  </div>
 
-      <div className="analysis-premium-steps">
-        {analysisMessages.map((item, index) => (
-          <div className="analysis-premium-step" key={index}>
-            <i>{index + 1}</i>
-            <p>{item}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+                  <div className="analysis-premium-steps">
+                    {analysisMessages.map((item, index) => (
+                      <div className="analysis-premium-step" key={index}>
+                        <i>{index + 1}</i>
+                        <p>{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-    <div className="analysis-console">
-      <b>Формируем карту решений...</b>
+                <div className="analysis-console">
+                  <b>Формируем карту решений...</b>
 
-      {analysisMessages.map((item, index) => (
-        <span key={index}>
-          {new Date().toLocaleTimeString("ru-RU", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          })}{" "}
-          &gt; {item}
-        </span>
-      ))}
-    </div>
-  </div>
-) : !result ? (
+                  {analysisMessages.map((item, index) => (
+                    <span key={index}>
+                      {new Date().toLocaleTimeString("ru-RU", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}{" "}
+                      &gt; {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : !result ? (
               <div className="step-screen" key={step}>
                 <div className="constructor-head">
                   <div>
@@ -296,6 +344,7 @@ export default function Constructor() {
                   {current.options.map(([title, desc], index) => (
                     <button
                       key={title}
+                      type="button"
                       className={
                         answers[current.key] === title
                           ? "constructor-card active"
@@ -385,6 +434,7 @@ export default function Constructor() {
 
             <div className="constructor-actions">
               <button
+                type="button"
                 className="constructor-secondary"
                 onClick={prevStep}
                 disabled={(step === 0 && !result) || analyzing}
@@ -394,6 +444,7 @@ export default function Constructor() {
 
               {!result && !analyzing && (
                 <button
+                  type="button"
                   className={
                     selected
                       ? "constructor-primary ready"
@@ -429,7 +480,10 @@ export default function Constructor() {
               </div>
             </div>
 
-            <form className={result ? "lead-form active" : "lead-form"}>
+            <form
+              className={result ? "lead-form active" : "lead-form"}
+              onSubmit={(e) => e.preventDefault()}
+            >
               <h3>Оставьте контакт</h3>
               <p>
                 Специалист перезвонит, уточнит детали и подскажет следующий
@@ -452,8 +506,12 @@ export default function Constructor() {
                 }
               />
 
-              <button type="button" onClick={handleLeadSubmit}>
-                Жду звонка
+              <button
+                type="button"
+                onClick={handleLeadSubmit}
+                disabled={leadSubmitting}
+              >
+                {leadSubmitting ? "Отправляем..." : "Жду звонка"}
               </button>
 
               {leadStatus && (
@@ -463,17 +521,22 @@ export default function Constructor() {
                 </div>
               )}
 
-<small className="form-consent">
-  Нажимая кнопку, вы соглашаетесь с{" "}
-  <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
-    политикой конфиденциальности
-  </a>{" "}
-  и{" "}
-  <a href="/docs/user-agreement.pdf" target="_blank" rel="noreferrer">
-    пользовательским соглашением
-  </a>
-  .
-</small>            </form>
+              <small className="form-consent">
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+                  политикой конфиденциальности
+                </a>{" "}
+                и{" "}
+                <a
+                  href="/docs/user-agreement.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  пользовательским соглашением
+                </a>
+                .
+              </small>
+            </form>
           </aside>
         </div>
       </div>
