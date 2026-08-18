@@ -42,3 +42,19 @@ Thumbs.db
 *.db
 tmp/
 temp/
+# Добавь эти строки в конец твоего .gitignore:
+
+# Бэкапы и патчи
+*.patch
+backup-*
+
+# Временные текстовые логи разработки
+*-check.txt
+*-audit.txt
+CHANGES.txt
+
+# Артефакты скриншотов (если они генерируются автоматически)
+# artifacts/ 
+
+# Max messenger secrets (на всякий случай)
+max-subscription.json
