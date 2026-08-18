@@ -94,6 +94,11 @@ if (!is_array($utm)) {
     $utm = [];
 }
 
+$attribution = $data['attribution'] ?? [];
+if (!is_array($attribution)) {
+    $attribution = [];
+}
+
 $record = [
     'request_id' => $requestId,
     'created_at' => date('c'),
@@ -115,6 +120,13 @@ $record = [
     'entry_point' => $entryPoint,
     'page' => $page,
     'device' => $device,
+
+    'attribution_source' => cleanString($attribution['source'] ?? ''),
+    'landing_page' => cleanString($attribution['landing_page'] ?? ''),
+    'referrer' => cleanString($attribution['referrer'] ?? ''),
+    'first_seen_at' => cleanString($attribution['first_seen_at'] ?? ''),
+    'last_seen_at' => cleanString($attribution['last_seen_at'] ?? ''),
+    'yandex_client_id' => cleanString($attribution['yandex_client_id'] ?? ''),
 
     'utm' => [
         'utm_source' => cleanString($utm['utm_source'] ?? ''),
@@ -333,9 +345,23 @@ function sendToBitrix(array $config, array $record): array
         'NAME' => $record['name'],
         'OPENED' => 'Y',
         'SOURCE_ID' => 'WEB',
-        'SOURCE_DESCRIPTION' => '4-solutions.ru',
+        'SOURCE_DESCRIPTION' => buildSourceDescription($record),
         'COMMENTS' => buildBitrixComment($record),
     ];
+
+    $utmFields = [
+        'UTM_SOURCE' => $record['utm']['utm_source'],
+        'UTM_MEDIUM' => $record['utm']['utm_medium'],
+        'UTM_CAMPAIGN' => $record['utm']['utm_campaign'],
+        'UTM_CONTENT' => $record['utm']['utm_content'],
+        'UTM_TERM' => $record['utm']['utm_term'],
+    ];
+
+    foreach ($utmFields as $fieldName => $fieldValue) {
+        if ($fieldValue !== '') {
+            $fields[$fieldName] = $fieldValue;
+        }
+    }
 
     if (!empty($config['BITRIX_ASSIGNED_BY_ID'])) {
         $fields['ASSIGNED_BY_ID'] = (int) $config['BITRIX_ASSIGNED_BY_ID'];
@@ -437,6 +463,14 @@ function buildBitrixComment(array $record): string
 
     $lines = array_merge($lines, [
         '',
+        'Attribution:',
+        'source: ' . valueOrDash($record['attribution_source']),
+        'landing_page: ' . valueOrDash($record['landing_page']),
+        'referrer: ' . valueOrDash($record['referrer']),
+        'first_seen_at: ' . valueOrDash($record['first_seen_at']),
+        'last_seen_at: ' . valueOrDash($record['last_seen_at']),
+        'yandex_client_id: ' . valueOrDash($record['yandex_client_id']),
+        '',
         'UTM:',
         'utm_source: ' . valueOrDash($record['utm']['utm_source']),
         'utm_medium: ' . valueOrDash($record['utm']['utm_medium']),
@@ -451,6 +485,25 @@ function buildBitrixComment(array $record): string
     ]);
 
     return implode("\n", $lines);
+}
+
+function buildSourceDescription(array $record): string
+{
+    $parts = ['4-solutions.ru'];
+
+    if ($record['utm']['utm_source'] !== '') {
+        $parts[] = 'utm_source=' . $record['utm']['utm_source'];
+    }
+
+    if ($record['utm']['utm_campaign'] !== '') {
+        $parts[] = 'utm_campaign=' . $record['utm']['utm_campaign'];
+    }
+
+    if ($record['attribution_source'] !== '' && $record['attribution_source'] !== $record['utm']['utm_source']) {
+        $parts[] = 'source=' . $record['attribution_source'];
+    }
+
+    return implode('; ', $parts);
 }
 
 function sendToTelegram(

@@ -1,24 +1,4 @@
-function getUtm() {
-  if (typeof window === "undefined") {
-    return {
-      utm_source: "",
-      utm_medium: "",
-      utm_campaign: "",
-      utm_content: "",
-      utm_term: "",
-    };
-  }
-
-  const params = new URLSearchParams(window.location.search);
-
-  return {
-    utm_source: params.get("utm_source") || "",
-    utm_medium: params.get("utm_medium") || "",
-    utm_campaign: params.get("utm_campaign") || "",
-    utm_content: params.get("utm_content") || "",
-    utm_term: params.get("utm_term") || "",
-  };
-}
+import { getAttributionData } from "./attributionService";
 
 function getPageUrl() {
   if (typeof window === "undefined") {
@@ -99,6 +79,7 @@ function normalizePhone(value) {
 
 export async function sendLeadToCRM(data = {}) {
   const name = normalizeString(data.name);
+  const attribution = getAttributionData();
 
   const rawContact = normalizeString(
     data.contact || data.phone || data.phoneNumber || data.telegram || data.email
@@ -125,7 +106,8 @@ export async function sendLeadToCRM(data = {}) {
 
     page: getPageUrl(),
     device: getDeviceType(),
-    utm: getUtm(),
+    utm: attribution.utm,
+    attribution,
   };
 
   const response = await fetch("/api/lead.php", {

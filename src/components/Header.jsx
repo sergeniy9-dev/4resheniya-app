@@ -5,8 +5,8 @@ import {
   trackOpenContacts,
 } from "../services/analyticsService";
 import {
-  Building2,
   Hammer,
+  Images,
   Layers3,
   PhoneCall,
 } from "lucide-react";
@@ -20,12 +20,12 @@ export default function Header() {
         <img src="/brand/logo.png" alt="4 Решения" />
       </a>
 
-      <nav className="header-nav">
-  <a href="#about">
+<nav className="header-nav">
+  <a href="#projects">
     <i>
-      <Building2 size={15} strokeWidth={2.2} />
+      <Images size={15} strokeWidth={2.2} />
     </i>
-    О компании
+    Проекты
   </a>
 
   <a href="#services">
@@ -94,7 +94,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://wa.me/"
+  href="https://wa.me/79269628353"
   target="_blank"
   rel="noreferrer"
   onClick={() => trackContactClick("whatsapp", "header_popover")}
@@ -103,7 +103,7 @@ export default function Header() {
 </a>
 
 <a
-  href="mailto:info@4solutions.ru"
+  href="mailto:info@4-solutions.ru"
   onClick={() => trackContactClick("email", "header_popover")}
 >
   <i>✉</i><b>Почта</b><small>Отправить письмо</small>
@@ -119,7 +119,7 @@ export default function Header() {
 </a>
 
 <a
-  href="https://max.ru"
+  href="https://max.ru/id9725006609_bot?start=site_header"
   onClick={() => trackContactClick("max", "header_popover")}
 >
   <i>◆</i><b>MAX</b><small>Связь в мессенджере</small>

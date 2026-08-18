@@ -9,12 +9,20 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
 
+      workbox: {
+        navigateFallbackDenylist: [
+          /^\/docs\//,
+          /^\/api\//,
+          /^\/go\//,
+        ],
+      },
+
       manifest: {
         name: "4РЕШЕНИЯ",
         short_name: "4РЕШЕНИЯ",
 
         description:
-          "Интерактивная карта сценариев пространства",
+          "Проектирование, строительство и комплексная реализация пространств",
 
         theme_color: "#050505",
         background_color: "#050505",
@@ -27,7 +35,6 @@ export default defineConfig({
             sizes: "192x192",
             type: "image/png",
           },
-
           {
             src: "/icon-512.png",
             sizes: "512x512",

@@ -1,10 +1,39 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/services.css";
 import { sendLeadToCRM } from "../services/leadService";
 import {
+  trackEvent,
+  trackLead,
   trackServiceOpen,
   trackServiceLead,
 } from "../services/analyticsService";
+
+const PRESENTATION_QR_SERVICE = {
+  number: "presentation_qr",
+  title: "Обсудить проект",
+};
+
+const PRESENTATION_QR_LEAD_DATA = {
+  formName: "presentation_qr_modal",
+  entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const url = new URL(window.location.href);
+  const isHomePage =
+    url.pathname === "/" || url.pathname.endsWith("/index.html");
+
+  return (
+    isHomePage &&
+    (url.searchParams.get("openLead") === "1" ||
+      url.searchParams.get("modal") === "lead")
+  );
+}
 
 const services = [
   {
@@ -22,8 +51,8 @@ const services = [
   },
   {
     number: "02",
-    title: "Ремонт под ключ",
-    text: "Организация работ, сметы, сроки, контроль качества и сдача объекта.",
+    title: "Реализация интерьера",
+    text: "Строительно-отделочные работы, управление сметой и сроками, контроль качества и сдача объекта.",
     image: "/services/repair.jpg",
     details: [
       "Подробная смета без скрытых затрат",
@@ -62,7 +91,46 @@ const services = [
 ];
 
 export default function Services() {
+  const autoOpenHandled = useRef(false);
+  const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
   const [activeService, setActiveService] = useState(null);
+  const [modalService, setModalService] = useState(
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+
+  useEffect(() => {
+    if (autoOpenHandled.current || typeof window === "undefined") {
+      return;
+    }
+
+    autoOpenHandled.current = true;
+
+    if (!initialPresentationLead) {
+      return;
+    }
+
+    trackEvent("qr_presentation_lead_open", PRESENTATION_QR_LEAD_DATA);
+
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("openLead") === "1") {
+      url.searchParams.delete("openLead");
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${url.pathname}${url.search}${url.hash}`
+      );
+    }
+  }, [initialPresentationLead]);
 
   function toggleService(item) {
     const nextValue = activeService === item.number ? null : item.number;
@@ -74,18 +142,110 @@ export default function Services() {
     }
   }
 
-  async function handleServiceLead(item) {
+  function handleServiceLead(item) {
     trackServiceLead(item.title);
 
-    await sendLeadToCRM({
-      source: "Интерес к услуге",
-      name: "Пользователь сайта",
-      contact: "Клик по услуге",
-      message: `Пользователь нажал подробнее: ${item.title}`,
-      service: item.title,
-    });
+    if (typeof window === "undefined") {
+      return;
+    }
 
-    alert("Заявка по услуге отправлена. Мы свяжемся с вами.");
+    setLeadContext("service");
+    setModalService(item);
+    setLeadStatus(null);
+  }
+
+  function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+    setModalService(null);
+    setLeadStatus(null);
+  }
+
+  async function submitServiceLead(event) {
+    event.preventDefault();
+
+    if (!modalService || leadSubmitting) {
+      return;
+    }
+
+    const name = leadForm.name.trim();
+    const contact = leadForm.contact.trim();
+
+    if (!name || !contact) {
+      setLeadStatus({
+        mode: "error",
+        text: "Укажите имя и телефон или Telegram для связи.",
+      });
+
+      return;
+    }
+
+    setLeadSubmitting(true);
+    setLeadStatus(null);
+
+    try {
+      const isPresentationQrLead = leadContext === "presentation_qr";
+
+      await sendLeadToCRM({
+        source: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.source
+          : "Форма услуги",
+        name,
+        contact,
+        service: modalService.title,
+        formName: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.formName
+          : "Модальное окно услуги",
+        channel: "website_form",
+        entryPoint: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        message: `Пользователь интересовался услугой: ${modalService.title}`,
+      });
+
+      trackLead(
+        isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        {
+          service: modalService.title,
+          formName: isPresentationQrLead
+            ? PRESENTATION_QR_LEAD_DATA.formName
+            : "Модальное окно услуги",
+        }
+      );
+
+      setLeadStatus({
+        mode: "success",
+        text: "Заявка отправлена. Специалист свяжется с вами.",
+      });
+      setLeadForm({
+        name: "",
+        contact: "",
+      });
+
+      setTimeout(() => {
+        setModalService(null);
+        setLeadStatus(null);
+      }, 1400);
+    } catch (error) {
+      console.error("Service lead submit error:", error);
+      setLeadStatus({
+        mode: "error",
+        text: "Не получилось отправить заявку. Попробуйте ещё раз.",
+      });
+    } finally {
+      setLeadSubmitting(false);
+    }
+  }
+
+  function updateLeadForm(field, value) {
+    setLeadForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   }
 
   return (
@@ -154,7 +314,7 @@ export default function Services() {
                         handleServiceLead(item);
                       }}
                     >
-                      Подробнее об услуге <i>→</i>
+                      Обсудить со специалистом <i>→</i>
                     </button>
                   </div>
                 </div>
@@ -163,6 +323,74 @@ export default function Services() {
           ))}
         </div>
       </div>
+
+      {modalService && (
+        <div
+          className="service-modal-overlay"
+          role="presentation"
+          onClick={closeLeadModal}
+        >
+          <div
+            className="service-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="service-modal-close"
+              aria-label="Закрыть окно"
+              onClick={closeLeadModal}
+            >
+              ×
+            </button>
+
+            <span className="service-modal-kicker">Заявка на услугу</span>
+            <h3 id="service-modal-title">{modalService.title}</h3>
+            <p>
+              Оставьте контакт, и специалист подскажет следующий шаг по этой
+              услуге.
+            </p>
+
+            <form className="service-modal-form" onSubmit={submitServiceLead}>
+              <label>
+                Имя
+                <input
+                  value={leadForm.name}
+                  onChange={(e) => updateLeadForm("name", e.target.value)}
+                  placeholder="Ваше имя"
+                  autoFocus
+                />
+              </label>
+
+              <label>
+                Телефон или Telegram
+                <input
+                  value={leadForm.contact}
+                  onChange={(e) => updateLeadForm("contact", e.target.value)}
+                  placeholder="+7 (000) 000-00-00"
+                />
+              </label>
+
+              <button type="submit" disabled={leadSubmitting}>
+                {leadSubmitting ? "Отправляем..." : "Жду звонка"}
+              </button>
+            </form>
+
+            {leadStatus && (
+              <div className={`service-modal-status ${leadStatus.mode}`}>
+                {leadStatus.text}
+              </div>
+            )}
+
+            <small>
+              Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и
+              пользовательским соглашением.
+            </small>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

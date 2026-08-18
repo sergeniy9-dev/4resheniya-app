@@ -1,0 +1,5622 @@
+﻿ОТЧЁТ ПО ПРОЕКТУ 4-SOLUTIONS
+
+==========================================================================================
+1. ОСНОВНАЯ ИНФОРМАЦИЯ
+==========================================================================================
+Папка проекта: C:\Code\4sn\4sn
+Дата создания отчёта: 2026-07-17 02:08:32
+
+PowerShell:
+
+Major  Minor  Build  Revision
+-----  -----  -----  --------
+5      1      19041  1237    
+
+Node.js:
+v24.16.0
+
+npm:
+11.13.0
+
+
+
+
+==========================================================================================
+2. СОСТОЯНИЕ GIT
+==========================================================================================
+Текущая ветка:
+regru-php-crm
+
+Состояние файлов:
+ M api/lead.php
+ M index.html
+ M src/App.jsx
+ M src/components/Contacts.jsx
+ M src/components/Header.jsx
+ M src/components/Services.jsx
+ M src/services/leadService.js
+ M src/styles/services.css
+?? api/max-webhook.php
+?? backup-before-max-link.patch
+?? max-subscription.json
+?? project-audit.txt
+?? public/docs/
+?? public/go/
+?? src/services/attributionService.js
+?? tools/
+
+Последние 5 коммитов:
+5341116 Connect forms to PHP lead API and update analytics tracking1
+42240ba Connect forms to PHP lead API and update analytics tracking
+2f5997e Add REG.RU PHP lead API
+33949fc Create REG.RU PHP backend structure
+29446f6 add Bitxfix
+
+Незафиксированные изменения:
+git : warning: in the working copy of 'src/App.jsx', LF will be replaced by CRLF the next time Git touch
+es it
+строка:63 знак:9
++         git diff -- src public package.json
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteExcept 
+   ion
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: in the working copy of 'src/components/Contacts.jsx', LF will be replaced by CRLF the next time
+ Git touches it
+warning: in the working copy of 'src/services/leadService.js', LF will be replaced by CRLF the next time
+ Git touches it
+warning: in the working copy of 'src/styles/services.css', LF will be replaced by CRLF the next time Git
+ touches it
+diff --git a/src/App.jsx b/src/App.jsx
+index 9524950..ae2d412 100644
+--- a/src/App.jsx
++++ b/src/App.jsx
+@@ -1,3 +1,4 @@
++import { useEffect } from "react";
+ import Hero from "./components/Hero";
+ import Constructor from "./components/Constructor";
+ import Header from "./components/Header";
+@@ -8,22 +9,27 @@ import Contacts from "./components/Contacts";
+ import Projects from "./components/Projects";
+ import About from "./components/About";
+ import ConsentBanner from "./components/ConsentBanner";
++import { initAttribution } from "./services/attributionService";
+ 
+ 
+ 
+ export default function App() {
++  useEffect(() => {
++    initAttribution();
++  }, []);
++
+   useReveal();
+   useSmoothScroll();
+   return (
+     <>
+-          <ConsentBanner />
++      <ConsentBanner />
+       <Header />
+       <Hero />
+-       <About />
++      <About />
+       <Projects />
+       <Services />
+       <Constructor />
+       <Contacts />
+     </>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/Contacts.jsx b/src/components/Contacts.jsx
+index 62c07fc..5485cff 100644
+--- a/src/components/Contacts.jsx
++++ b/src/components/Contacts.jsx
+@@ -7,7 +7,6 @@ import {
+ } from "../services/analyticsService";
+ import { Send, Camera, MessageCircle } from "lucide-react";
+ 
+-
+ export default function Contacts() {
+   const [form, setForm] = useState({
+     name: "",
+@@ -46,7 +45,7 @@ export default function Contacts() {
+           <p className="eyebrow">╨Э╨Р╨и╨Ш ╨Ъ╨Р╨Э╨Р╨Ы╨л</p>
+           <div className="contacts-socials">
+   <a
+-    href="https://max.ru/USERNAME"
++    href="https://max.ru/id9725006609_bot?start=site_contacts"
+     target="_blank"
+     rel="noreferrer"
+     aria-label="MAX"
+@@ -56,7 +55,7 @@ export default function Contacts() {
+   </a>
+ 
+   <a
+-    href="https://t.me/USERNAME"
++    href="https://t.me/fouresolutions"
+     target="_blank"
+     rel="noreferrer"
+     aria-label="Telegram"
+@@ -66,7 +65,7 @@ export default function Contacts() {
+   </a>
+ 
+   <a
+-    href="https://instagram.com/USERNAME"
++    href="https://www.instagram.com/four__solutions"  
+     target="_blank"
+     rel="noreferrer"
+     aria-label="Instagram"
+@@ -94,10 +93,10 @@ export default function Contacts() {
+             </a>
+ 
+             <a
+-              href="mailto:info@4solutions.ru"
++              href="mailto:info@4-solutions.ru"
+               onClick={() => trackContactClick("email", "contacts_section")}
+             >
+-              info@4solutions.ru
++              info@4-solutions.ru
+             </a>
+           </div>
+ 
+@@ -170,4 +169,4 @@ export default function Contacts() {
+       </div>
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/Header.jsx b/src/components/Header.jsx
+index cdf02a4..109e9bb 100644
+--- a/src/components/Header.jsx
++++ b/src/components/Header.jsx
+@@ -94,7 +94,7 @@ export default function Header() {
+ </a>
+ 
+ <a
+-  href="https://wa.me/"
++  href="https://wa.me/79269628353"
+   target="_blank"
+   rel="noreferrer"
+   onClick={() => trackContactClick("whatsapp", "header_popover")}
+@@ -103,7 +103,7 @@ export default function Header() {
+ </a>
+ 
+ <a
+-  href="mailto:info@4solutions.ru"
++  href="mailto:info@4-solutions.ru"
+   onClick={() => trackContactClick("email", "header_popover")}
+ >
+   <i>тЬЙ</i><b>╨Я╨╛╤З╤В╨░</b><small>╨Ю╤В╨┐╤А╨░╨▓╨╕╤В╤М ╨┐╨╕╤Б╤М╨╝╨╛</small>
+@@ -119,7 +119,7 @@ export default function Header() {
+ </a>
+ 
+ <a
+-  href="https://max.ru"
++  href="https://max.ru/id9725006609_bot?start=site_header"
+   onClick={() => trackContactClick("max", "header_popover")}
+ >
+   <i>тЧЖ</i><b>MAX</b><small>╨б╨▓╤П╨╖╤М ╨▓ ╨╝╨╡╤Б╤Б╨╡╨╜╨┤╨╢╨╡╤А╨╡</small>
+diff --git a/src/components/Services.jsx b/src/components/Services.jsx
+index b0dc752..52c97f6 100644
+--- a/src/components/Services.jsx
++++ b/src/components/Services.jsx
+@@ -1,11 +1,40 @@
+-import { useState } from "react";
++import { useEffect, useRef, useState } from "react";
+ import "../styles/services.css";
+ import { sendLeadToCRM } from "../services/leadService";
+ import {
++  trackEvent,
++  trackLead,
+   trackServiceOpen,
+   trackServiceLead,
+ } from "../services/analyticsService";
+ 
++const PRESENTATION_QR_SERVICE = {
++  number: "presentation_qr",
++  title: "╨Ю╨▒╤Б╤Г╨┤╨╕╤В╤М ╨┐╤А╨╛╨╡╨║╤В",
++};
++
++const PRESENTATION_QR_LEAD_DATA = {
++  formName: "presentation_qr_modal",
++  entryPoint: "presentation_qr_callback",
++  source: "presentation",
++};
++
++function shouldAutoOpenPresentationLead() {
++  if (typeof window === "undefined") {
++    return false;
++  }
++
++  const url = new URL(window.location.href);
++  const isHomePage =
++    url.pathname === "/" || url.pathname.endsWith("/index.html");
++
++  return (
++    isHomePage &&
++    (url.searchParams.get("openLead") === "1" ||
++      url.searchParams.get("modal") === "lead")
++  );
++}
++
+ const services = [
+   {
+     number: "01",
+@@ -62,7 +91,46 @@ const services = [
+ ];
+ 
+ export default function Services() {
++  const autoOpenHandled = useRef(false);
++  const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
+   const [activeService, setActiveService] = useState(null);
++  const [modalService, setModalService] = useState(
++    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
++  );
++  const [leadContext, setLeadContext] = useState(
++    initialPresentationLead ? "presentation_qr" : "service"
++  );
++  const [leadForm, setLeadForm] = useState({
++    name: "",
++    contact: "",
++  });
++  const [leadSubmitting, setLeadSubmitting] = useState(false);
++  const [leadStatus, setLeadStatus] = useState(null);
++
++  useEffect(() => {
++    if (autoOpenHandled.current || typeof window === "undefined") {
++      return;
++    }
++
++    autoOpenHandled.current = true;
++
++    if (!initialPresentationLead) {
++      return;
++    }
++
++    trackEvent("qr_presentation_lead_open", PRESENTATION_QR_LEAD_DATA);
++
++    const url = new URL(window.location.href);
++
++    if (url.searchParams.get("openLead") === "1") {
++      url.searchParams.delete("openLead");
++      window.history.replaceState(
++        window.history.state,
++        "",
++        `${url.pathname}${url.search}${url.hash}`
++      );
++    }
++  }, [initialPresentationLead]);
+ 
+   function toggleService(item) {
+     const nextValue = activeService === item.number ? null : item.number;
+@@ -74,18 +142,110 @@ export default function Services() {
+     }
+   }
+ 
+-  async function handleServiceLead(item) {
++  function handleServiceLead(item) {
+     trackServiceLead(item.title);
+ 
+-    await sendLeadToCRM({
+-      source: "╨Ш╨╜╤В╨╡╤А╨╡╤Б ╨║ ╤Г╤Б╨╗╤Г╨│╨╡",
+-      name: "╨Я╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╤Б╨░╨╣╤В╨░",
+-      contact: "╨Ъ╨╗╨╕╨║ ╨┐╨╛ ╤Г╤Б╨╗╤Г╨│╨╡",
+-      message: `╨Я╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╨╜╨░╨╢╨░╨╗ ╨┐╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡: ${item.title}`,
+-      service: item.title,
+-    });
++    if (typeof window === "undefined") {
++      return;
++    }
+ 
+-    alert("╨Ч╨░╤П╨▓╨║╨░ ╨┐╨╛ ╤Г╤Б╨╗╤Г╨│╨╡ ╨╛╤В╨┐╤А╨░╨▓╨╗╨╡╨╜╨░. ╨Ь╤Л ╤Б╨▓╤П╨╢╨╡╨╝╤Б╤П ╤Б ╨▓╨░╨╝╨╕.");
++    setLeadContext("service");
++    setModalService(item);
++    setLeadStatus(null);
++  }
++
++  function closeLeadModal() {
++    if (leadSubmitting) {
++      return;
++    }
++
++    setModalService(null);
++    setLeadStatus(null);
++  }
++
++  async function submitServiceLead(event) {
++    event.preventDefault();
++
++    if (!modalService || leadSubmitting) {
++      return;
++    }
++
++    const name = leadForm.name.trim();
++    const contact = leadForm.contact.trim();
++
++    if (!name || !contact) {
++      setLeadStatus({
++        mode: "error",
++        text: "╨г╨║╨░╨╢╨╕╤В╨╡ ╨╕╨╝╤П ╨╕ ╤В╨╡╨╗╨╡╤Д╨╛╨╜ ╨╕╨╗╨╕ Telegram ╨┤╨╗╤П ╤Б╨▓╤П╨╖╨╕.",
++      });
++
++      return;
++    }
++
++    setLeadSubmitting(true);
++    setLeadStatus(null);
++
++    try {
++      const isPresentationQrLead = leadContext === "presentation_qr";
++
++      await sendLeadToCRM({
++        source: isPresentationQrLead
++          ? PRESENTATION_QR_LEAD_DATA.source
++          : "╨д╨╛╤А╨╝╨░ ╤Г╤Б╨╗╤Г╨│╨╕",
++        name,
++        contact,
++        service: modalService.title,
++        formName: isPresentationQrLead
++          ? PRESENTATION_QR_LEAD_DATA.formName
++          : "╨Ь╨╛╨┤╨░╨╗╤М╨╜╨╛╨╡ ╨╛╨║╨╜╨╛ ╤Г╤Б╨╗╤Г╨│╨╕",
++        channel: "website_form",
++        entryPoint: isPresentationQrLead
++          ? PRESENTATION_QR_LEAD_DATA.entryPoint
++          : "service_modal",
++        message: `╨Я╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╨╕╨╜╤В╨╡╤А╨╡╤Б╨╛╨▓╨░╨╗╤Б╤П ╤Г╤Б╨╗╤Г╨│╨╛╨╣: ${modalService.title}`,
++      });
++
++      trackLead(
++        isPresentationQrLead
++          ? PRESENTATION_QR_LEAD_DATA.entryPoint
++          : "service_modal",
++        {
++          service: modalService.title,
++          formName: isPresentationQrLead
++            ? PRESENTATION_QR_LEAD_DATA.formName
++            : "╨Ь╨╛╨┤╨░╨╗╤М╨╜╨╛╨╡ ╨╛╨║╨╜╨╛ ╤Г╤Б╨╗╤Г╨│╨╕",
++        }
++      );
++
++      setLeadStatus({
++        mode: "success",
++        text: "╨Ч╨░╤П╨▓╨║╨░ ╨╛╤В╨┐╤А╨░╨▓╨╗╨╡╨╜╨░. ╨б╨┐╨╡╤Ж╨╕╨░╨╗╨╕╤Б╤В ╤Б╨▓╤П╨╢╨╡╤В╤Б╤П ╤Б ╨▓╨░╨╝╨╕.",
++      });
++      setLeadForm({
++        name: "",
++        contact: "",
++      });
++
++      setTimeout(() => {
++        setModalService(null);
++        setLeadStatus(null);
++      }, 1400);
++    } catch (error) {
++      console.error("Service lead submit error:", error);
++      setLeadStatus({
++        mode: "error",
++        text: "╨Э╨╡ ╨┐╨╛╨╗╤Г╤З╨╕╨╗╨╛╤Б╤М ╨╛╤В╨┐╤А╨░╨▓╨╕╤В╤М ╨╖╨░╤П╨▓╨║╤Г. ╨Я╨╛╨┐╤А╨╛╨▒╤Г╨╣╤В╨╡ ╨╡╤Й╤С ╤А╨░╨╖.",
++      });
++    } finally {
++      setLeadSubmitting(false);
++    }
++  }
++
++  function updateLeadForm(field, value) {
++    setLeadForm((prev) => ({
++      ...prev,
++      [field]: value,
++    }));
+   }
+ 
+   return (
+@@ -154,7 +314,7 @@ export default function Services() {
+                         handleServiceLead(item);
+                       }}
+                     >
+-                      ╨Я╨╛╨┤╤А╨╛╨▒╨╜╨╡╨╡ ╨╛╨▒ ╤Г╤Б╨╗╤Г╨│╨╡ <i>тЖТ</i>
++                      ╨Ю╨▒╤Б╤Г╨┤╨╕╤В╤М ╤Б╨╛ ╤Б╨┐╨╡╤Ж╨╕╨░╨╗╨╕╤Б╤В╨╛╨╝ <i>тЖТ</i>
+                     </button>
+                   </div>
+                 </div>
+@@ -163,6 +323,74 @@ export default function Services() {
+           ))}
+         </div>
+       </div>
++
++      {modalService && (
++        <div
++          className="service-modal-overlay"
++          role="presentation"
++          onClick={closeLeadModal}
++        >
++          <div
++            className="service-modal"
++            role="dialog"
++            aria-modal="true"
++            aria-labelledby="service-modal-title"
++            onClick={(e) => e.stopPropagation()}
++          >
++            <button
++              type="button"
++              className="service-modal-close"
++              aria-label="╨Ч╨░╨║╤А╤Л╤В╤М ╨╛╨║╨╜╨╛"
++              onClick={closeLeadModal}
++            >
++              ├Ч
++            </button>
++
++            <span className="service-modal-kicker">╨Ч╨░╤П╨▓╨║╨░ ╨╜╨░ ╤Г╤Б╨╗╤Г╨│╤Г</span>
++            <h3 id="service-modal-title">{modalService.title}</h3>
++            <p>
++              ╨Ю╤Б╤В╨░╨▓╤М╤В╨╡ ╨║╨╛╨╜╤В╨░╨║╤В, ╨╕ ╤Б╨┐╨╡╤Ж╨╕╨░╨╗╨╕╤Б╤В ╨┐╨╛╨┤╤Б╨║╨░╨╢╨╡╤В ╤Б╨╗╨╡╨┤╤Г╤О╤Й╨╕╨╣ ╤И╨░╨│ ╨┐╨╛ ╤Н╤В╨╛╨╣
++              ╤Г╤Б╨╗╤Г╨│╨╡.
++            </p>
++
++            <form className="service-modal-form" onSubmit={submitServiceLead}>
++              <label>
++                ╨Ш╨╝╤П
++                <input
++                  value={leadForm.name}
++                  onChange={(e) => updateLeadForm("name", e.target.value)}
++                  placeholder="╨Т╨░╤И╨╡ ╨╕╨╝╤П"
++                  autoFocus
++                />
++              </label>
++
++              <label>
++                ╨в╨╡╨╗╨╡╤Д╨╛╨╜ ╨╕╨╗╨╕ Telegram
++                <input
++                  value={leadForm.contact}
++                  onChange={(e) => updateLeadForm("contact", e.target.value)}
++                  placeholder="+7 (000) 000-00-00"
++                />
++              </label>
++
++              <button type="submit" disabled={leadSubmitting}>
++                {leadSubmitting ? "╨Ю╤В╨┐╤А╨░╨▓╨╗╤П╨╡╨╝..." : "╨Ц╨┤╤Г ╨╖╨▓╨╛╨╜╨║╨░"}
++              </button>
++            </form>
++
++            {leadStatus && (
++              <div className={`service-modal-status ${leadStatus.mode}`}>
++                {leadStatus.text}
++              </div>
++            )}
++
++            <small>
++              ╨Э╨░╨╢╨╕╨╝╨░╤П ╨║╨╜╨╛╨┐╨║╤Г, ╨▓╤Л ╤Б╨╛╨│╨╗╨░╤И╨░╨╡╤В╨╡╤Б╤М ╤Б ╨┐╨╛╨╗╨╕╤В╨╕╨║╨╛╨╣ ╨║╨╛╨╜╤Д╨╕╨┤╨╡╨╜╤Ж╨╕╨░╨╗╤М╨╜╨╛╤Б╤В╨╕ ╨╕
++              ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М╤Б╨║╨╕╨╝ ╤Б╨╛╨│╨╗╨░╤И╨╡╨╜╨╕╨╡╨╝.
++            </small>
++          </div>
++        </div>
++      )}
+     </section>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/services/leadService.js b/src/services/leadService.js
+index 4722edf..b3c7dd4 100644
+--- a/src/services/leadService.js
++++ b/src/services/leadService.js
+@@ -1,24 +1,4 @@
+-function getUtm() {
+-  if (typeof window === "undefined") {
+-    return {
+-      utm_source: "",
+-      utm_medium: "",
+-      utm_campaign: "",
+-      utm_content: "",
+-      utm_term: "",
+-    };
+-  }
+-
+-  const params = new URLSearchParams(window.location.search);
+-
+-  return {
+-    utm_source: params.get("utm_source") || "",
+-    utm_medium: params.get("utm_medium") || "",
+-    utm_campaign: params.get("utm_campaign") || "",
+-    utm_content: params.get("utm_content") || "",
+-    utm_term: params.get("utm_term") || "",
+-  };
+-}
++import { getAttributionData } from "./attributionService";
+ 
+ function getPageUrl() {
+   if (typeof window === "undefined") {
+@@ -99,6 +79,7 @@ function normalizePhone(value) {
+ 
+ export async function sendLeadToCRM(data = {}) {
+   const name = normalizeString(data.name);
++  const attribution = getAttributionData();
+ 
+   const rawContact = normalizeString(
+     data.contact || data.phone || data.phoneNumber || data.telegram || data.email
+@@ -125,7 +106,8 @@ export async function sendLeadToCRM(data = {}) {
+ 
+     page: getPageUrl(),
+     device: getDeviceType(),
+-    utm: getUtm(),
++    utm: attribution.utm,
++    attribution,
+   };
+ 
+   const response = await fetch("/api/lead.php", {
+@@ -157,4 +139,4 @@ export async function sendLeadToCRM(data = {}) {
+ 
+ export const sendLead = sendLeadToCRM;
+ 
+-export default sendLeadToCRM;
+\ No newline at end of file
++export default sendLeadToCRM;
+diff --git a/src/styles/services.css b/src/styles/services.css
+index 0494471..502ace4 100644
+--- a/src/styles/services.css
++++ b/src/styles/services.css
+@@ -372,4 +372,166 @@
+     transform: translateY(0);
+     filter: blur(0);
+   }
+-}
+\ No newline at end of file
++}
++
++.service-modal-overlay {
++  position: fixed;
++  inset: 0;
++  z-index: 90;
++
++  display: grid;
++  place-items: center;
++  padding: 20px;
++
++  background: rgba(0, 0, 0, 0.66);
++  backdrop-filter: blur(14px);
++}
++
++.service-modal {
++  position: relative;
++  width: min(460px, 100%);
++  padding: 30px;
++  border-radius: 24px;
++
++  background:
++    linear-gradient(180deg, rgba(28, 25, 20, 0.98), rgba(9, 9, 9, 0.98));
++  border: 1px solid rgba(215, 168, 75, 0.24);
++  box-shadow:
++    0 28px 90px rgba(0, 0, 0, 0.62),
++    inset 0 1px 0 rgba(255, 255, 255, 0.06);
++
++  animation: serviceModalIn .24s ease both;
++}
++
++.service-modal-close {
++  position: absolute;
++  top: 16px;
++  right: 16px;
++
++  width: 38px;
++  height: 38px;
++  border-radius: 50%;
++  border: 1px solid rgba(215, 168, 75, 0.18);
++  background: rgba(255, 255, 255, 0.04);
++  color: #f0d49a;
++  font-size: 26px;
++  line-height: 1;
++  cursor: pointer;
++}
++
++.service-modal-kicker {
++  display: block;
++  margin-bottom: 12px;
++  color: #d7a84b;
++  font-size: 12px;
++  font-weight: 800;
++  letter-spacing: 0.14em;
++  text-transform: uppercase;
++}
++
++.service-modal h3 {
++  margin: 0 44px 12px 0;
++  color: #d8c7a3;
++  font-size: 32px;
++  line-height: 1;
++}
++
++.service-modal p {
++  margin: 0 0 22px;
++  color: rgba(216, 199, 163, 0.7);
++  line-height: 1.55;
++}
++
++.service-modal-form {
++  display: grid;
++  gap: 14px;
++}
++
++.service-modal-form label {
++  display: grid;
++  gap: 8px;
++  color: rgba(216, 199, 163, 0.72);
++  font-size: 13px;
++  font-weight: 700;
++}
++
++.service-modal-form input {
++  width: 100%;
++  height: 50px;
++  padding: 0 16px;
++  border-radius: 14px;
++  border: 1px solid rgba(215, 168, 75, 0.18);
++  background: rgba(255, 255, 255, 0.055);
++  color: #f5ead2;
++  outline: none;
++}
++
++.service-modal-form input:focus {
++  border-color: rgba(215, 168, 75, 0.54);
++  box-shadow: 0 0 0 3px rgba(215, 168, 75, 0.12);
++}
++
++.service-modal-form button {
++  height: 52px;
++  margin-top: 4px;
++  border: 0;
++  border-radius: 16px;
++  background: #d7a84b;
++  color: #151008;
++  font-weight: 900;
++  cursor: pointer;
++}
++
++.service-modal-form button:disabled {
++  opacity: 0.7;
++  cursor: wait;
++}
++
++.service-modal-status {
++  margin-top: 14px;
++  padding: 12px 14px;
++  border-radius: 14px;
++  font-size: 14px;
++  line-height: 1.35;
++}
++
++.service-modal-status.success {
++  background: rgba(93, 161, 103, 0.14);
++  color: #b8e1bd;
++}
++
++.service-modal-status.error {
++  background: rgba(190, 80, 64, 0.14);
++  color: #f3b0a5;
++}
++
++.service-modal small {
++  display: block;
++  margin-top: 14px;
++  color: rgba(216, 199, 163, 0.48);
++  font-size: 11px;
++  line-height: 1.45;
++}
++
++@keyframes serviceModalIn {
++  from {
++    opacity: 0;
++    transform: translateY(12px) scale(0.98);
++  }
++
++  to {
++    opacity: 1;
++    transform: translateY(0) scale(1);
++  }
++}
++
++@media (max-width: 640px) {
++  .service-modal {
++    padding: 24px;
++    border-radius: 20px;
++  }
++
++  .service-modal h3 {
++    font-size: 27px;
++  }
++}
+
+Изменения, добавленные в индекс:
+
+
+==========================================================================================
+3. PACKAGE.JSON
+==========================================================================================
+{
+  "name": "4sn",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "npm run build"
+  },
+  "dependencies": {
+    "framer-motion": "^12.38.0",
+    "lenis": "^1.3.23",
+    "lucide-react": "^1.16.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.2.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "vite": "^8.0.10",
+    "vite-plugin-pwa": "^1.3.0"
+  }
+}
+
+
+
+==========================================================================================
+4. ФАЙЛЫ КОНФИГУРАЦИИ
+==========================================================================================
+
+----- vite.config.js -----
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+
+export default defineConfig({
+  plugins: [
+    react(),
+
+    VitePWA({
+      registerType: "autoUpdate",
+
+      manifest: {
+        name: "4Р Р•РЁР•РќРРЇ",
+        short_name: "4Р Р•РЁР•РќРРЇ",
+
+        description:
+          "РРЅС‚РµСЂР°РєС‚РёРІРЅР°СЏ РєР°СЂС‚Р° СЃС†РµРЅР°СЂРёРµРІ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°",
+
+        theme_color: "#050505",
+        background_color: "#050505",
+
+        display: "standalone",
+
+        icons: [
+          {
+            src: "/icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+
+          {
+            src: "/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
+    }),
+  ],
+});
+
+----- eslint.config.js -----
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+
+
+
+==========================================================================================
+5. СТРУКТУРА ПАПКИ SRC
+==========================================================================================
+src\App.css | 9.3 KB
+src\App.jsx | 0.9 KB
+src\assets\hero.png | 12.8 KB
+src\assets\react.svg | 4 KB
+src\assets\vite.svg | 8.5 KB
+src\components\About.jsx | 3.7 KB
+src\components\ConsentBanner.jsx | 1 KB
+src\components\Constructor.jsx | 17.6 KB
+src\components\Contacts.jsx | 5 KB
+src\components\Header.jsx | 3.2 KB
+src\components\Hero.jsx | 1.7 KB
+src\components\Projects.jsx | 4.8 KB
+src\components\Services.jsx | 12.2 KB
+src\config\appConfig.js | 0.3 KB
+src\data\aiSummary.js | 5.9 KB
+src\data\previewLibrary.js | 1.4 KB
+src\data\solutions.js | 2.7 KB
+src\data\themes.js | 2.1 KB
+src\hooks\useReveal.js | 0.5 KB
+src\hooks\useSmoothScroll.js | 0.5 KB
+src\index.css | 1.3 KB
+src\main.jsx | 0.2 KB
+src\services\analyticsService.js | 3.9 KB
+src\services\attributionService.js | 3.2 KB
+src\services\leadService.js | 3.2 KB
+src\services\workTimeService.js | 0.9 KB
+src\style\hero.css | 8.8 KB
+src\styles\about.css | 3.4 KB
+src\styles\consent.css | 1.2 KB
+src\styles\constructor.css | 24.6 KB
+src\styles\contacts.css | 4.3 KB
+src\styles\header.css | 8.3 KB
+src\styles\hero.css | 7.2 KB
+src\styles\projects.css | 7.3 KB
+src\styles\services.css | 9.5 KB
+
+
+==========================================================================================
+6. СТРУКТУРА ПАПКИ PUBLIC
+==========================================================================================
+public\about\about-main.jpg | 1960.6 KB
+public\brand\logo.png | 850.8 KB
+public\docs\offer.pdf | 100.9 KB
+public\docs\privacy.pdf | 128.9 KB
+public\docs\user-agreement.pdf | 81.9 KB
+public\docs\Альбом реализованных проектов.pdf | 35394.4 KB
+public\favicon.svg | 9.3 KB
+public\go\max.php | 3.1 KB
+public\icon-192.png | 419.8 KB
+public\icon-512.png | 419.8 KB
+public\icons.svg | 4.9 KB
+public\previews\library\apartment-contrast.jpg | 2115.9 KB
+public\previews\library\apartment-soft.jpg | 2571.5 KB
+public\previews\library\apartment-warm.jpg | 2557.6 KB
+public\previews\library\commercial-classic.jpg | 2457.9 KB
+public\previews\library\commercial-contrast.jpg | 2119.4 KB
+public\previews\library\commercial-soft.jpg | 2302.5 KB
+public\previews\library\house-classic.jpg | 2369 KB
+public\previews\library\house-contrast.jpg | 2705 KB
+public\previews\library\house-warm.jpg | 2833.9 KB
+public\previews\library\office-classic.jpg | 2457.9 KB
+public\previews\library\office-contrast.jpg | 2119.4 KB
+public\previews\library\office-soft.jpg | 2302.5 KB
+public\projects\apartment.jpg | 1981.1 KB
+public\projects\commercial.jpg | 1988.6 KB
+public\projects\house.jpg | 2225.5 KB
+public\services\build.jpg | 249.8 KB
+public\services\complete.jpg | 215.1 KB
+public\services\contact-bg.jpg | 2295.2 KB
+public\services\design.jpg | 243.9 KB
+public\services\repair.jpg | 204.9 KB
+public\yandex_344d6e91d259b84f.html | 0.1 KB
+
+
+==========================================================================================
+7. ПОИСК КАРТОЧЕК, ПРОЕКТОВ И ВСПЛЫВАЮЩЕГО ОКНА
+==========================================================================================
+
+Файл: C:\Code\4sn\4sn\src\App.jsx
+Строка: 9
+import useSmoothScroll from "./hooks/useSmoothScroll";
+import useReveal from "./hooks/useReveal";
+import Contacts from "./components/Contacts";
+> import Projects from "./components/Projects";
+import About from "./components/About";
+import ConsentBanner from "./components/ConsentBanner";
+import { initAttribution } from "./services/attributionService";
+
+
+
+export default function App() {
+  useEffect(() => {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\App.jsx
+Строка: 29
+      <Header />
+      <Hero />
+      <About />
+>       <Projects />
+      <Services />
+      <Constructor />
+      <Contacts />
+    </>
+  );
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\About.jsx
+Строка: 106
+                className="about-contact-button"
+                onClick={() => trackMainCta("about_section")}
+              >
+>                 <strong>Обсудить проект</strong>
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 66
+    trackOpenContacts("header");
+  }}
+>
+>   Обсудить проект <em>→</em>
+</button>
+
+        {contactsOpen && (
+          <div className="contact-popover">
+            <div className="contact-popover-head">
+              <span>Связаться с нами</span>
+              <button type="button" onClick={() => setContactsOpen(false)}>
+                ×
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 2
+import { useState } from "react";
+> import "../styles/projects.css";
+import { trackProjectClick, trackMainCta } from "../services/analyticsService";
+
+const projects = [
+  {
+    title: "Частный дом",
+    location: "Московская область",
+    subtitle: "Реализация под ключ\nс расширенной комплектацией",
+    image: "/projects/house.jpg",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 3
+import { useState } from "react";
+import "../styles/projects.css";
+> import { trackProjectClick, trackMainCta } from "../services/analyticsService";
+
+const projects = [
+  {
+    title: "Частный дом",
+    location: "Московская область",
+    subtitle: "Реализация под ключ\nс расширенной комплектацией",
+    image: "/projects/house.jpg",
+    description:
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 5
+import "../styles/projects.css";
+import { trackProjectClick, trackMainCta } from "../services/analyticsService";
+
+> const projects = [
+  {
+    title: "Частный дом",
+    location: "Московская область",
+    subtitle: "Реализация под ключ\nс расширенной комплектацией",
+    image: "/projects/house.jpg",
+    description:
+      "Комплексная реализация частного дома: архитектурная логика, материалы, свет, инженерия и контроль исполнения в единой системе.",
+    details: ["Под ключ", "Комплектация", "Авторский контроль"],
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 7
+
+const projects = [
+  {
+>     title: "Частный дом",
+    location: "Московская область",
+    subtitle: "Реализация под ключ\nс расширенной комплектацией",
+    image: "/projects/house.jpg",
+    description:
+      "Комплексная реализация частного дома: архитектурная логика, материалы, свет, инженерия и контроль исполнения в единой системе.",
+    details: ["Под ключ", "Комплектация", "Авторский контроль"],
+  },
+  {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 10
+    title: "Частный дом",
+    location: "Московская область",
+    subtitle: "Реализация под ключ\nс расширенной комплектацией",
+>     image: "/projects/house.jpg",
+    description:
+      "Комплексная реализация частного дома: архитектурная логика, материалы, свет, инженерия и контроль исполнения в единой системе.",
+    details: ["Под ключ", "Комплектация", "Авторский контроль"],
+  },
+  {
+    title: "Квартира",
+    location: "Москва",
+    subtitle: "Спокойный минимализм\nи архитектурный свет",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 16
+    details: ["Под ключ", "Комплектация", "Авторский контроль"],
+  },
+  {
+>     title: "Квартира",
+    location: "Москва",
+    subtitle: "Спокойный минимализм\nи архитектурный свет",
+    image: "/projects/apartment.jpg",
+    description:
+      "Интерьер с акцентом на спокойную эстетику, сценарии света, натуральные материалы и чистую организацию пространства.",
+    details: ["Интерьер", "Свет", "Материалы"],
+  },
+  {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 19
+    title: "Квартира",
+    location: "Москва",
+    subtitle: "Спокойный минимализм\nи архитектурный свет",
+>     image: "/projects/apartment.jpg",
+    description:
+      "Интерьер с акцентом на спокойную эстетику, сценарии света, натуральные материалы и чистую организацию пространства.",
+    details: ["Интерьер", "Свет", "Материалы"],
+  },
+  {
+    title: "Коммерческое пространство",
+    location: "Москва-Сити",
+    subtitle: "Интерьер для бренда\nс акцентом на атмосферу",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 25
+    details: ["Интерьер", "Свет", "Материалы"],
+  },
+  {
+>     title: "Коммерческое пространство",
+    location: "Москва-Сити",
+    subtitle: "Интерьер для бренда\nс акцентом на атмосферу",
+    image: "/projects/commercial.jpg",
+    description:
+      "Пространство, где интерьер работает на восприятие бренда: статус, удобство, визуальная цельность и премиальная подача.",
+    details: ["Бренд-среда", "Коммерция", "Атмосфера"],
+  },
+];
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 28
+    title: "Коммерческое пространство",
+    location: "Москва-Сити",
+    subtitle: "Интерьер для бренда\nс акцентом на атмосферу",
+>     image: "/projects/commercial.jpg",
+    description:
+      "Пространство, где интерьер работает на восприятие бренда: статус, удобство, визуальная цельность и премиальная подача.",
+    details: ["Бренд-среда", "Коммерция", "Атмосфера"],
+  },
+];
+
+export default function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 35
+  },
+];
+
+> export default function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+
+  function openProject(item) {
+    setActiveProject(item);
+    trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 36
+];
+
+export default function Projects() {
+>   const [activeProject, setActiveProject] = useState(null);
+
+  function openProject(item) {
+    setActiveProject(item);
+    trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+    setActiveProject(null);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 38
+export default function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+
+>   function openProject(item) {
+    setActiveProject(item);
+    trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+    setActiveProject(null);
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 39
+  const [activeProject, setActiveProject] = useState(null);
+
+  function openProject(item) {
+>     setActiveProject(item);
+    trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+    setActiveProject(null);
+  }
+
+  return (
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 40
+
+  function openProject(item) {
+    setActiveProject(item);
+>     trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+    setActiveProject(null);
+  }
+
+  return (
+    <section id="projects" className="projects reveal">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 43
+    trackProjectClick(item.title);
+  }
+
+>   function closeProject() {
+    setActiveProject(null);
+  }
+
+  return (
+    <section id="projects" className="projects reveal">
+      <div className="projects-wrap">
+        <div className="projects-head">
+          <p className="eyebrow">ПРОЕКТЫ</p>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 44
+  }
+
+  function closeProject() {
+>     setActiveProject(null);
+  }
+
+  return (
+    <section id="projects" className="projects reveal">
+      <div className="projects-wrap">
+        <div className="projects-head">
+          <p className="eyebrow">ПРОЕКТЫ</p>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 48
+  }
+
+  return (
+>     <section id="projects" className="projects reveal">
+      <div className="projects-wrap">
+        <div className="projects-head">
+          <p className="eyebrow">ПРОЕКТЫ</p>
+
+          <h2>
+            Реализованные
+            <br />
+            пространства
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 49
+
+  return (
+    <section id="projects" className="projects reveal">
+>       <div className="projects-wrap">
+        <div className="projects-head">
+          <p className="eyebrow">ПРОЕКТЫ</p>
+
+          <h2>
+            Реализованные
+            <br />
+            пространства
+          </h2>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 50
+  return (
+    <section id="projects" className="projects reveal">
+      <div className="projects-wrap">
+>         <div className="projects-head">
+          <p className="eyebrow">ПРОЕКТЫ</p>
+
+          <h2>
+            Реализованные
+            <br />
+            пространства
+          </h2>
+        </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 60
+          </h2>
+        </div>
+
+>         <div className="projects-grid">
+          {projects.map((item) => (
+            <article
+              className="project-card"
+              key={item.title}
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            >
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 61
+        </div>
+
+        <div className="projects-grid">
+>           {projects.map((item) => (
+            <article
+              className="project-card"
+              key={item.title}
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            >
+              <div className="project-overlay"></div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 63
+        <div className="projects-grid">
+          {projects.map((item) => (
+            <article
+>               className="project-card"
+              key={item.title}
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            >
+              <div className="project-overlay"></div>
+
+              <div className="project-content">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 69
+                backgroundImage: `url(${item.image})`,
+              }}
+            >
+>               <div className="project-overlay"></div>
+
+              <div className="project-content">
+                <span>{item.location}</span>
+
+                <h3>{item.title}</h3>
+
+                <p>
+                  {item.subtitle.split("\n").map((line) => (
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 71
+            >
+              <div className="project-overlay"></div>
+
+>               <div className="project-content">
+                <span>{item.location}</span>
+
+                <h3>{item.title}</h3>
+
+                <p>
+                  {item.subtitle.split("\n").map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 82
+                  ))}
+                </p>
+
+>                 <button type="button" onClick={() => openProject(item)}>
+                  Смотреть проект
+                  <i>→</i>
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 83
+                </p>
+
+                <button type="button" onClick={() => openProject(item)}>
+>                   Смотреть проект
+                  <i>→</i>
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 92
+        </div>
+      </div>
+
+>       {activeProject && (
+        <div className="project-modal" onClick={closeProject}>
+          <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="project-modal-close"
+              onClick={closeProject}
+            >
+              ×
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 93
+      </div>
+
+      {activeProject && (
+>         <div className="project-modal" onClick={closeProject}>
+          <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="project-modal-close"
+              onClick={closeProject}
+            >
+              ×
+            </button>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 94
+
+      {activeProject && (
+        <div className="project-modal" onClick={closeProject}>
+>           <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="project-modal-close"
+              onClick={closeProject}
+            >
+              ×
+            </button>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 97
+          <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+>               className="project-modal-close"
+              onClick={closeProject}
+            >
+              ×
+            </button>
+
+            <div
+              className="project-modal-image"
+              style={{
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 98
+            <button
+              type="button"
+              className="project-modal-close"
+>               onClick={closeProject}
+            >
+              ×
+            </button>
+
+            <div
+              className="project-modal-image"
+              style={{
+                backgroundImage: `url(${activeProject.image})`,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 104
+            </button>
+
+            <div
+>               className="project-modal-image"
+              style={{
+                backgroundImage: `url(${activeProject.image})`,
+              }}
+            ></div>
+
+            <div className="project-modal-content">
+              <p className="eyebrow">{activeProject.location}</p>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 106
+            <div
+              className="project-modal-image"
+              style={{
+>                 backgroundImage: `url(${activeProject.image})`,
+              }}
+            ></div>
+
+            <div className="project-modal-content">
+              <p className="eyebrow">{activeProject.location}</p>
+
+              <h3>{activeProject.title}</h3>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 110
+              }}
+            ></div>
+
+>             <div className="project-modal-content">
+              <p className="eyebrow">{activeProject.location}</p>
+
+              <h3>{activeProject.title}</h3>
+
+              <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 111
+            ></div>
+
+            <div className="project-modal-content">
+>               <p className="eyebrow">{activeProject.location}</p>
+
+              <h3>{activeProject.title}</h3>
+
+              <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 113
+            <div className="project-modal-content">
+              <p className="eyebrow">{activeProject.location}</p>
+
+>               <h3>{activeProject.title}</h3>
+
+              <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 115
+
+              <h3>{activeProject.title}</h3>
+
+>               <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+
+              <a
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 117
+
+              <p>{activeProject.description}</p>
+
+>               <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+
+              <a
+                href="#contacts"
+                className="project-modal-button"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 118
+              <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+>                 {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+
+              <a
+                href="#contacts"
+                className="project-modal-button"
+                onClick={() => {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 125
+
+              <a
+                href="#contacts"
+>                 className="project-modal-button"
+                onClick={() => {
+                  trackMainCta("project_modal");
+                  closeProject();
+                }}
+              >
+                Обсудить похожий проект
+                <i>→</i>
+              </a>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 127
+                href="#contacts"
+                className="project-modal-button"
+                onClick={() => {
+>                   trackMainCta("project_modal");
+                  closeProject();
+                }}
+              >
+                Обсудить похожий проект
+                <i>→</i>
+              </a>
+            </div>
+          </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 128
+                className="project-modal-button"
+                onClick={() => {
+                  trackMainCta("project_modal");
+>                   closeProject();
+                }}
+              >
+                Обсудить похожий проект
+                <i>→</i>
+              </a>
+            </div>
+          </div>
+        </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 131
+                  closeProject();
+                }}
+              >
+>                 Обсудить похожий проект
+                <i>→</i>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 13
+
+const PRESENTATION_QR_SERVICE = {
+  number: "presentation_qr",
+>   title: "Обсудить проект",
+};
+
+const PRESENTATION_QR_LEAD_DATA = {
+  formName: "presentation_qr_modal",
+  entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 17
+};
+
+const PRESENTATION_QR_LEAD_DATA = {
+>   formName: "presentation_qr_modal",
+  entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 34
+  return (
+    isHomePage &&
+    (url.searchParams.get("openLead") === "1" ||
+>       url.searchParams.get("modal") === "lead")
+  );
+}
+
+const services = [
+  {
+    number: "01",
+    title: "Дизайн-проект",
+    text: "Планировка, визуальная концепция, материалы, свет и сценарии пространства.",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 97
+  const autoOpenHandled = useRef(false);
+  const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
+  const [activeService, setActiveService] = useState(null);
+>   const [modalService, setModalService] = useState(
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 153
+    }
+
+    setLeadContext("service");
+>     setModalService(item);
+    setLeadStatus(null);
+  }
+
+  function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 157
+    setLeadStatus(null);
+  }
+
+>   function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+    setModalService(null);
+    setLeadStatus(null);
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 162
+      return;
+    }
+
+>     setModalService(null);
+    setLeadStatus(null);
+  }
+
+  async function submitServiceLead(event) {
+    event.preventDefault();
+
+    if (!modalService || leadSubmitting) {
+      return;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 169
+  async function submitServiceLead(event) {
+    event.preventDefault();
+
+>     if (!modalService || leadSubmitting) {
+      return;
+    }
+
+    const name = leadForm.name.trim();
+    const contact = leadForm.contact.trim();
+
+    if (!name || !contact) {
+      setLeadStatus({
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 197
+          : "Форма услуги",
+        name,
+        contact,
+>         service: modalService.title,
+        formName: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.formName
+          : "Модальное окно услуги",
+        channel: "website_form",
+        entryPoint: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        message: `Пользователь интересовался услугой: ${modalService.title}`,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 204
+        channel: "website_form",
+        entryPoint: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+>           : "service_modal",
+        message: `Пользователь интересовался услугой: ${modalService.title}`,
+      });
+
+      trackLead(
+        isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 205
+        entryPoint: isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+>         message: `Пользователь интересовался услугой: ${modalService.title}`,
+      });
+
+      trackLead(
+        isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        {
+          service: modalService.title,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 211
+      trackLead(
+        isPresentationQrLead
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+>           : "service_modal",
+        {
+          service: modalService.title,
+          formName: isPresentationQrLead
+            ? PRESENTATION_QR_LEAD_DATA.formName
+            : "Модальное окно услуги",
+        }
+      );
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 213
+          ? PRESENTATION_QR_LEAD_DATA.entryPoint
+          : "service_modal",
+        {
+>           service: modalService.title,
+          formName: isPresentationQrLead
+            ? PRESENTATION_QR_LEAD_DATA.formName
+            : "Модальное окно услуги",
+        }
+      );
+
+      setLeadStatus({
+        mode: "success",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 230
+      });
+
+      setTimeout(() => {
+>         setModalService(null);
+        setLeadStatus(null);
+      }, 1400);
+    } catch (error) {
+      console.error("Service lead submit error:", error);
+      setLeadStatus({
+        mode: "error",
+        text: "Не получилось отправить заявку. Попробуйте ещё раз.",
+      });
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 327
+        </div>
+      </div>
+
+>       {modalService && (
+        <div
+          className="service-modal-overlay"
+          role="presentation"
+          onClick={closeLeadModal}
+        >
+          <div
+            className="service-modal"
+            role="dialog"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 329
+
+      {modalService && (
+        <div
+>           className="service-modal-overlay"
+          role="presentation"
+          onClick={closeLeadModal}
+        >
+          <div
+            className="service-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 331
+        <div
+          className="service-modal-overlay"
+          role="presentation"
+>           onClick={closeLeadModal}
+        >
+          <div
+            className="service-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 334
+          onClick={closeLeadModal}
+        >
+          <div
+>             className="service-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="service-modal-close"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 335
+        >
+          <div
+            className="service-modal"
+>             role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="service-modal-close"
+              aria-label="Закрыть окно"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 336
+          <div
+            className="service-modal"
+            role="dialog"
+>             aria-modal="true"
+            aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="service-modal-close"
+              aria-label="Закрыть окно"
+              onClick={closeLeadModal}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 337
+            className="service-modal"
+            role="dialog"
+            aria-modal="true"
+>             aria-labelledby="service-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="service-modal-close"
+              aria-label="Закрыть окно"
+              onClick={closeLeadModal}
+            >
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 342
+          >
+            <button
+              type="button"
+>               className="service-modal-close"
+              aria-label="Закрыть окно"
+              onClick={closeLeadModal}
+            >
+              ×
+            </button>
+
+            <span className="service-modal-kicker">Заявка на услугу</span>
+            <h3 id="service-modal-title">{modalService.title}</h3>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 344
+              type="button"
+              className="service-modal-close"
+              aria-label="Закрыть окно"
+>               onClick={closeLeadModal}
+            >
+              ×
+            </button>
+
+            <span className="service-modal-kicker">Заявка на услугу</span>
+            <h3 id="service-modal-title">{modalService.title}</h3>
+            <p>
+              Оставьте контакт, и специалист подскажет следующий шаг по этой
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 349
+              ×
+            </button>
+
+>             <span className="service-modal-kicker">Заявка на услугу</span>
+            <h3 id="service-modal-title">{modalService.title}</h3>
+            <p>
+              Оставьте контакт, и специалист подскажет следующий шаг по этой
+              услуге.
+            </p>
+
+            <form className="service-modal-form" onSubmit={submitServiceLead}>
+              <label>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 350
+            </button>
+
+            <span className="service-modal-kicker">Заявка на услугу</span>
+>             <h3 id="service-modal-title">{modalService.title}</h3>
+            <p>
+              Оставьте контакт, и специалист подскажет следующий шаг по этой
+              услуге.
+            </p>
+
+            <form className="service-modal-form" onSubmit={submitServiceLead}>
+              <label>
+                Имя
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 356
+              услуге.
+            </p>
+
+>             <form className="service-modal-form" onSubmit={submitServiceLead}>
+              <label>
+                Имя
+                <input
+                  value={leadForm.name}
+                  onChange={(e) => updateLeadForm("name", e.target.value)}
+                  placeholder="Ваше имя"
+                  autoFocus
+                />
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 382
+            </form>
+
+            {leadStatus && (
+>               <div className={`service-modal-status ${leadStatus.mode}`}>
+                {leadStatus.text}
+              </div>
+            )}
+
+            <small>
+              Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и
+              пользовательским соглашением.
+            </small>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\config\appConfig.js
+Строка: 2
+export const appConfig = {
+>   projectName: "4РЕШЕНИЯ",
+  leadSource: "4РЕШЕНИЯ / Карта решений",
+  funnelName: "4Solutions / Карта решений",
+
+  // Сюда позже вставим webhook Bitrix24
+  bitrixWebhookUrl: "",
+};
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\data\aiSummary.js
+Строка: 3
+export function generateAiSummary(answers) {
+  const objectText = {
+>     Квартира: "для квартиры важно сохранить баланс между уютом, функциональностью и визуальной чистотой",
+    Дом: "для дома важно собрать цельный сценарий жизни: общие зоны, приватность, свет и материалы",
+    Коммерция: "для коммерческого пространства особенно важны первое впечатление, навигация и ощущение доверия",
+    Офис: "для офиса важно совместить статус, концентрацию команды и комфортную рабочую среду",
+  };
+
+  const priorityText = {
+    Практичность:
+      "акцент стоит сделать на понятной планировке, долговечных материалах и контролируемой реализации",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\data\previewLibrary.js
+Строка: 5
+  const object = answers.object?.toLowerCase() || "";
+  const mood = answers.mood?.toLowerCase() || "";
+
+>   // КВАРТИРА
+  if (object.includes("кварт")) {
+    if (mood.includes("тёп")) {
+      return "/previews/library/apartment-warm.jpg";
+    }
+
+    if (mood.includes("конт")) {
+      return "/previews/library/apartment-contrast.jpg";
+    }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\data\solutions.js
+Строка: 7
+    desc: "Выберите пространство, для которого нужно подобрать сценарии.",
+    key: "object",
+    options: [
+>       ["Квартира", "Для жизни, семьи или сдачи"],
+      ["Дом", "Интерьер, комплектация и реализация"],
+      ["Коммерция", "Пространство для продаж и впечатления"],
+      ["Офис", "Команда, статус и эффективность"],
+    ],
+  },
+  {
+    title: "Главная задача",
+    desc: "Что должно работать лучше всего?",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\services\analyticsService.js
+Строка: 142
+  return trackEvent("constructor_lead_submit", payload);
+}
+
+> export function trackProjectClick(projectName) {
+  return trackEvent("project_click", {
+    project: projectName,
+  });
+}
+
+export function trackAboutOpen(opened) {
+  return trackEvent(opened ? "about_open" : "about_close");
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\services\analyticsService.js
+Строка: 143
+}
+
+export function trackProjectClick(projectName) {
+>   return trackEvent("project_click", {
+    project: projectName,
+  });
+}
+
+export function trackAboutOpen(opened) {
+  return trackEvent(opened ? "about_open" : "about_close");
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\services\analyticsService.js
+Строка: 144
+
+export function trackProjectClick(projectName) {
+  return trackEvent("project_click", {
+>     project: projectName,
+  });
+}
+
+export function trackAboutOpen(opened) {
+  return trackEvent(opened ? "about_open" : "about_close");
+}
+
+export function trackMainCta(place = "site", payload = {}) {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\services\analyticsService.js
+Строка: 159
+  });
+}
+
+> export function trackDiscussProject(place = "site", payload = {}) {
+  return trackEvent("click_discuss_project", {
+    place,
+    ...payload,
+  });
+}
+
+export function trackImportantEvent(eventName, payload = {}) {
+  return trackEvent(eventName, payload);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\services\analyticsService.js
+Строка: 160
+}
+
+export function trackDiscussProject(place = "site", payload = {}) {
+>   return trackEvent("click_discuss_project", {
+    place,
+    ...payload,
+  });
+}
+
+export function trackImportantEvent(eventName, payload = {}) {
+  return trackEvent(eventName, payload);
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 1
+> .projects {
+  position: relative;
+  padding: 120px 0;
+  background:
+    radial-gradient(circle at top left, rgba(215,168,75,.06), transparent 30%),
+    #070707;
+}
+
+.projects-wrap {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 9
+    #070707;
+}
+
+> .projects-wrap {
+  width: min(1440px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.projects-head {
+  margin-bottom: 54px;
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 14
+  margin: 0 auto;
+}
+
+> .projects-head {
+  margin-bottom: 54px;
+}
+
+.projects-head h2 {
+  margin: 0;
+  color: #d8c7a3;
+  font-size: clamp(42px, 5vw, 86px);
+  line-height: .92;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 18
+  margin-bottom: 54px;
+}
+
+> .projects-head h2 {
+  margin: 0;
+  color: #d8c7a3;
+  font-size: clamp(42px, 5vw, 86px);
+  line-height: .92;
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 27
+  text-transform: uppercase;
+}
+
+> .projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.project-card {
+  position: relative;
+  min-height: 640px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 33
+  gap: 22px;
+}
+
+> .project-card {
+  position: relative;
+  min-height: 640px;
+
+  display: flex;
+  align-items: flex-end;
+
+  overflow: hidden;
+  border-radius: 34px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 53
+    box-shadow .65s ease;
+}
+
+> .project-card:hover {
+  transform: translateY(-10px);
+
+  box-shadow:
+    0 40px 90px rgba(0,0,0,.42),
+    0 0 38px rgba(215,168,75,.08);
+}
+
+.project-overlay {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 61
+    0 0 38px rgba(215,168,75,.08);
+}
+
+> .project-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.08),
+      rgba(0,0,0,.78)
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 77
+    backdrop-filter .6s ease;
+}
+
+> .project-card:hover .project-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.02),
+      rgba(0,0,0,.82)
+    );
+
+  backdrop-filter: blur(2px);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 88
+  backdrop-filter: blur(2px);
+}
+
+> .project-card::after {
+  content: "";
+
+  position: absolute;
+  inset: -30%;
+
+  background:
+    linear-gradient(
+      120deg,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 110
+    transform 1.4s ease;
+}
+
+> .project-card:hover::after {
+  transform:
+    translateX(100%)
+    rotate(14deg);
+}
+
+.project-content {
+  position: relative;
+  z-index: 2;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 116
+    rotate(14deg);
+}
+
+> .project-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+
+  padding: 34px;
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 125
+  padding: 34px;
+}
+
+> .project-content span {
+  display: block;
+
+  color: rgba(216,199,163,.74);
+
+  font-size: 13px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 137
+  margin-bottom: 14px;
+}
+
+> .project-content h3 {
+  margin: 0 0 20px;
+
+  color: #f0e2bf;
+
+  font-size: 42px;
+  line-height: .95;
+  letter-spacing: -.05em;
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 147
+  letter-spacing: -.05em;
+}
+
+> .project-content p {
+  margin: 0;
+
+  display: grid;
+  gap: 4px;
+
+  color: rgba(216,199,163,.7);
+
+  line-height: 1.45;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 158
+  line-height: 1.45;
+}
+
+> .project-content button {
+  margin-top: 28px;
+
+  height: 54px;
+  padding: 0 24px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 192
+    background .35s ease;
+}
+
+> .project-content button:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(215,168,75,.34);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(215,168,75,.12),
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 205
+    );
+}
+
+> .project-content button i {
+  font-style: normal;
+}
+
+@media (max-width: 1180px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 210
+}
+
+@media (max-width: 1180px) {
+>   .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-card {
+    min-height: 520px;
+  }
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 214
+    grid-template-columns: 1fr;
+  }
+
+>   .project-card {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects {
+    padding: 84px 0;
+  }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 220
+}
+
+@media (max-width: 640px) {
+>   .projects {
+    padding: 84px 0;
+  }
+
+  .projects-wrap {
+    width: calc(100% - 28px);
+  }
+
+  .projects-head h2 {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 224
+    padding: 84px 0;
+  }
+
+>   .projects-wrap {
+    width: calc(100% - 28px);
+  }
+
+  .projects-head h2 {
+    font-size: 42px;
+  }
+
+  .project-card {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 228
+    width: calc(100% - 28px);
+  }
+
+>   .projects-head h2 {
+    font-size: 42px;
+  }
+
+  .project-card {
+    min-height: 420px;
+    border-radius: 28px;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 232
+    font-size: 42px;
+  }
+
+>   .project-card {
+    min-height: 420px;
+    border-radius: 28px;
+  }
+
+  .project-content {
+    padding: 26px;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 237
+    border-radius: 28px;
+  }
+
+>   .project-content {
+    padding: 26px;
+  }
+
+  .project-content h3 {
+    font-size: 34px;
+  }
+
+  .project-content button {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 241
+    padding: 26px;
+  }
+
+>   .project-content h3 {
+    font-size: 34px;
+  }
+
+  .project-content button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 245
+    font-size: 34px;
+  }
+
+>   .project-content button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.project-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 250
+    justify-content: center;
+  }
+}
+> .project-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 267
+
+  backdrop-filter: blur(18px);
+
+>   animation: projectModalFade .35s ease both;
+}
+
+.project-modal-card {
+  position: relative;
+
+  width: min(1180px, 100%);
+  min-height: 620px;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 270
+  animation: projectModalFade .35s ease both;
+}
+
+> .project-modal-card {
+  position: relative;
+
+  width: min(1180px, 100%);
+  min-height: 620px;
+
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 292
+    0 0 70px rgba(215,168,75,.12),
+    inset 0 1px 0 rgba(255,255,255,.06);
+
+>   animation: projectModalIn .55s cubic-bezier(.19,1,.22,1) both;
+}
+
+.project-modal-close {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  z-index: 5;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 295
+  animation: projectModalIn .55s cubic-bezier(.19,1,.22,1) both;
+}
+
+> .project-modal-close {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  z-index: 5;
+
+  width: 42px;
+  height: 42px;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 314
+  cursor: pointer;
+}
+
+> .project-modal-image {
+  min-height: 620px;
+
+  background-size: cover;
+  background-position: center;
+
+  position: relative;
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 323
+  position: relative;
+}
+
+> .project-modal-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(90deg, transparent 45%, rgba(8,8,8,.72)),
+    linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.34));
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 333
+    linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.34));
+}
+
+> .project-modal-content {
+  padding: 64px 56px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.project-modal-content h3 {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 341
+  justify-content: center;
+}
+
+> .project-modal-content h3 {
+  margin: 18px 0 24px;
+
+  color: #d8c7a3;
+
+  font-size: clamp(42px, 5vw, 72px);
+  line-height: .92;
+  letter-spacing: -.06em;
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 351
+  letter-spacing: -.06em;
+}
+
+> .project-modal-content > p {
+  margin: 0;
+
+  color: rgba(216,199,163,.72);
+
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 360
+  line-height: 1.65;
+}
+
+> .project-modal-tags {
+  margin-top: 34px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.project-modal-tags span {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 368
+  gap: 10px;
+}
+
+> .project-modal-tags span {
+  padding: 12px 16px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(215,168,75,.14);
+
+  color: #f0d49a;
+  background: rgba(255,255,255,.035);
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 380
+  font-size: 13px;
+}
+
+> .project-modal-button {
+  margin-top: 42px;
+
+  height: 62px;
+  padding: 0 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 406
+    inset 0 1px 0 rgba(255,255,255,.34);
+}
+
+> .project-modal-button i {
+  font-style: normal;
+}
+
+@keyframes projectModalFade {
+  from {
+    opacity: 0;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 410
+  font-style: normal;
+}
+
+> @keyframes projectModalFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 420
+  }
+}
+
+> @keyframes projectModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(.96);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 435
+}
+
+@media (max-width: 900px) {
+>   .project-modal-card {
+    grid-template-columns: 1fr;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+
+  .project-modal-image {
+    min-height: 320px;
+  }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 441
+    overflow-y: auto;
+  }
+
+>   .project-modal-image {
+    min-height: 320px;
+  }
+
+  .project-modal-image::after {
+    background:
+      linear-gradient(180deg, transparent 45%, rgba(8,8,8,.82));
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 445
+    min-height: 320px;
+  }
+
+>   .project-modal-image::after {
+    background:
+      linear-gradient(180deg, transparent 45%, rgba(8,8,8,.82));
+  }
+
+  .project-modal-content {
+    padding: 34px 26px;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 450
+      linear-gradient(180deg, transparent 45%, rgba(8,8,8,.82));
+  }
+
+>   .project-modal-content {
+    padding: 34px 26px;
+  }
+
+  .project-modal-button {
+    width: 100%;
+  }
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\projects.css
+Строка: 454
+    padding: 34px 26px;
+  }
+
+>   .project-modal-button {
+    width: 100%;
+  }
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 377
+  }
+}
+
+> .service-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+
+  display: grid;
+  place-items: center;
+  padding: 20px;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 390
+  backdrop-filter: blur(14px);
+}
+
+> .service-modal {
+  position: relative;
+  width: min(460px, 100%);
+  padding: 30px;
+  border-radius: 24px;
+
+  background:
+    linear-gradient(180deg, rgba(28, 25, 20, 0.98), rgba(9, 9, 9, 0.98));
+  border: 1px solid rgba(215, 168, 75, 0.24);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 403
+    0 28px 90px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+>   animation: serviceModalIn .24s ease both;
+}
+
+.service-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 38px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 406
+  animation: serviceModalIn .24s ease both;
+}
+
+> .service-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(215, 168, 75, 0.18);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 422
+  cursor: pointer;
+}
+
+> .service-modal-kicker {
+  display: block;
+  margin-bottom: 12px;
+  color: #d7a84b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 432
+  text-transform: uppercase;
+}
+
+> .service-modal h3 {
+  margin: 0 44px 12px 0;
+  color: #d8c7a3;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.service-modal p {
+  margin: 0 0 22px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 439
+  line-height: 1;
+}
+
+> .service-modal p {
+  margin: 0 0 22px;
+  color: rgba(216, 199, 163, 0.7);
+  line-height: 1.55;
+}
+
+.service-modal-form {
+  display: grid;
+  gap: 14px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 445
+  line-height: 1.55;
+}
+
+> .service-modal-form {
+  display: grid;
+  gap: 14px;
+}
+
+.service-modal-form label {
+  display: grid;
+  gap: 8px;
+  color: rgba(216, 199, 163, 0.72);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 450
+  gap: 14px;
+}
+
+> .service-modal-form label {
+  display: grid;
+  gap: 8px;
+  color: rgba(216, 199, 163, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.service-modal-form input {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 458
+  font-weight: 700;
+}
+
+> .service-modal-form input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(215, 168, 75, 0.18);
+  background: rgba(255, 255, 255, 0.055);
+  color: #f5ead2;
+  outline: none;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 469
+  outline: none;
+}
+
+> .service-modal-form input:focus {
+  border-color: rgba(215, 168, 75, 0.54);
+  box-shadow: 0 0 0 3px rgba(215, 168, 75, 0.12);
+}
+
+.service-modal-form button {
+  height: 52px;
+  margin-top: 4px;
+  border: 0;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 474
+  box-shadow: 0 0 0 3px rgba(215, 168, 75, 0.12);
+}
+
+> .service-modal-form button {
+  height: 52px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 16px;
+  background: #d7a84b;
+  color: #151008;
+  font-weight: 900;
+  cursor: pointer;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 485
+  cursor: pointer;
+}
+
+> .service-modal-form button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.service-modal-status {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 490
+  cursor: wait;
+}
+
+> .service-modal-status {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.service-modal-status.success {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 498
+  line-height: 1.35;
+}
+
+> .service-modal-status.success {
+  background: rgba(93, 161, 103, 0.14);
+  color: #b8e1bd;
+}
+
+.service-modal-status.error {
+  background: rgba(190, 80, 64, 0.14);
+  color: #f3b0a5;
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 503
+  color: #b8e1bd;
+}
+
+> .service-modal-status.error {
+  background: rgba(190, 80, 64, 0.14);
+  color: #f3b0a5;
+}
+
+.service-modal small {
+  display: block;
+  margin-top: 14px;
+  color: rgba(216, 199, 163, 0.48);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 508
+  color: #f3b0a5;
+}
+
+> .service-modal small {
+  display: block;
+  margin-top: 14px;
+  color: rgba(216, 199, 163, 0.48);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+@keyframes serviceModalIn {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 516
+  line-height: 1.45;
+}
+
+> @keyframes serviceModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\styles\services.css
+Строка: 529
+}
+
+@media (max-width: 640px) {
+>   .service-modal {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .service-modal h3 {
+    font-size: 27px;
+  }
+}
+------------------------------------------------------------
+
+
+==========================================================================================
+8. ПОЛНОЕ СОДЕРЖИМОЕ НАИБОЛЕЕ ВЕРОЯТНЫХ ФАЙЛОВ
+==========================================================================================
+
+------------------------------------------------------------------------------------------
+ФАЙЛ: C:\Code\4sn\4sn\src\components\Projects.jsx
+------------------------------------------------------------------------------------------
+import { useState } from "react";
+import "../styles/projects.css";
+import { trackProjectClick, trackMainCta } from "../services/analyticsService";
+
+const projects = [
+  {
+    title: "Р§Р°СЃС‚РЅС‹Р№ РґРѕРј",
+    location: "РњРѕСЃРєРѕРІСЃРєР°СЏ РѕР±Р»Р°СЃС‚СЊ",
+    subtitle: "Р РµР°Р»РёР·Р°С†РёСЏ РїРѕРґ РєР»СЋС‡\nСЃ СЂР°СЃС€РёСЂРµРЅРЅРѕР№ РєРѕРјРїР»РµРєС‚Р°С†РёРµР№",
+    image: "/projects/house.jpg",
+    description:
+      "РљРѕРјРїР»РµРєСЃРЅР°СЏ СЂРµР°Р»РёР·Р°С†РёСЏ С‡Р°СЃС‚РЅРѕРіРѕ РґРѕРјР°: Р°СЂС…РёС‚РµРєС‚СѓСЂРЅР°СЏ Р»РѕРіРёРєР°, РјР°С‚РµСЂРёР°Р»С‹, СЃРІРµС‚, РёРЅР¶РµРЅРµСЂРёСЏ Рё РєРѕРЅС‚СЂРѕР»СЊ РёСЃРїРѕР»РЅРµРЅРёСЏ РІ РµРґРёРЅРѕР№ СЃРёСЃС‚РµРјРµ.",
+    details: ["РџРѕРґ РєР»СЋС‡", "РљРѕРјРїР»РµРєС‚Р°С†РёСЏ", "РђРІС‚РѕСЂСЃРєРёР№ РєРѕРЅС‚СЂРѕР»СЊ"],
+  },
+  {
+    title: "РљРІР°СЂС‚РёСЂР°",
+    location: "РњРѕСЃРєРІР°",
+    subtitle: "РЎРїРѕРєРѕР№РЅС‹Р№ РјРёРЅРёРјР°Р»РёР·Рј\nРё Р°СЂС…РёС‚РµРєС‚СѓСЂРЅС‹Р№ СЃРІРµС‚",
+    image: "/projects/apartment.jpg",
+    description:
+      "РРЅС‚РµСЂСЊРµСЂ СЃ Р°РєС†РµРЅС‚РѕРј РЅР° СЃРїРѕРєРѕР№РЅСѓСЋ СЌСЃС‚РµС‚РёРєСѓ, СЃС†РµРЅР°СЂРёРё СЃРІРµС‚Р°, РЅР°С‚СѓСЂР°Р»СЊРЅС‹Рµ РјР°С‚РµСЂРёР°Р»С‹ Рё С‡РёСЃС‚СѓСЋ РѕСЂРіР°РЅРёР·Р°С†РёСЋ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°.",
+    details: ["РРЅС‚РµСЂСЊРµСЂ", "РЎРІРµС‚", "РњР°С‚РµСЂРёР°Р»С‹"],
+  },
+  {
+    title: "РљРѕРјРјРµСЂС‡РµСЃРєРѕРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ",
+    location: "РњРѕСЃРєРІР°-РЎРёС‚Рё",
+    subtitle: "РРЅС‚РµСЂСЊРµСЂ РґР»СЏ Р±СЂРµРЅРґР°\nСЃ Р°РєС†РµРЅС‚РѕРј РЅР° Р°С‚РјРѕСЃС„РµСЂСѓ",
+    image: "/projects/commercial.jpg",
+    description:
+      "РџСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ, РіРґРµ РёРЅС‚РµСЂСЊРµСЂ СЂР°Р±РѕС‚Р°РµС‚ РЅР° РІРѕСЃРїСЂРёСЏС‚РёРµ Р±СЂРµРЅРґР°: СЃС‚Р°С‚СѓСЃ, СѓРґРѕР±СЃС‚РІРѕ, РІРёР·СѓР°Р»СЊРЅР°СЏ С†РµР»СЊРЅРѕСЃС‚СЊ Рё РїСЂРµРјРёР°Р»СЊРЅР°СЏ РїРѕРґР°С‡Р°.",
+    details: ["Р‘СЂРµРЅРґ-СЃСЂРµРґР°", "РљРѕРјРјРµСЂС†РёСЏ", "РђС‚РјРѕСЃС„РµСЂР°"],
+  },
+];
+
+export default function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+
+  function openProject(item) {
+    setActiveProject(item);
+    trackProjectClick(item.title);
+  }
+
+  function closeProject() {
+    setActiveProject(null);
+  }
+
+  return (
+    <section id="projects" className="projects reveal">
+      <div className="projects-wrap">
+        <div className="projects-head">
+          <p className="eyebrow">РџР РћР•РљРўР«</p>
+
+          <h2>
+            Р РµР°Р»РёР·РѕРІР°РЅРЅС‹Рµ
+            <br />
+            РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°
+          </h2>
+        </div>
+
+        <div className="projects-grid">
+          {projects.map((item) => (
+            <article
+              className="project-card"
+              key={item.title}
+              style={{
+                backgroundImage: `url(${item.image})`,
+              }}
+            >
+              <div className="project-overlay"></div>
+
+              <div className="project-content">
+                <span>{item.location}</span>
+
+                <h3>{item.title}</h3>
+
+                <p>
+                  {item.subtitle.split("\n").map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+                </p>
+
+                <button type="button" onClick={() => openProject(item)}>
+                  РЎРјРѕС‚СЂРµС‚СЊ РїСЂРѕРµРєС‚
+                  <i>в†’</i>
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      {activeProject && (
+        <div className="project-modal" onClick={closeProject}>
+          <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="project-modal-close"
+              onClick={closeProject}
+            >
+              Г—
+            </button>
+
+            <div
+              className="project-modal-image"
+              style={{
+                backgroundImage: `url(${activeProject.image})`,
+              }}
+            ></div>
+
+            <div className="project-modal-content">
+              <p className="eyebrow">{activeProject.location}</p>
+
+              <h3>{activeProject.title}</h3>
+
+              <p>{activeProject.description}</p>
+
+              <div className="project-modal-tags">
+                {activeProject.details.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+
+              <a
+                href="#contacts"
+                className="project-modal-button"
+                onClick={() => {
+                  trackMainCta("project_modal");
+                  closeProject();
+                }}
+              >
+                РћР±СЃСѓРґРёС‚СЊ РїРѕС…РѕР¶РёР№ РїСЂРѕРµРєС‚
+                <i>в†’</i>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+------------------------------------------------------------------------------------------
+ФАЙЛ: C:\Code\4sn\4sn\src\data\aiSummary.js
+------------------------------------------------------------------------------------------
+export function generateAiSummary(answers) {
+  const objectText = {
+    РљРІР°СЂС‚РёСЂР°: "РґР»СЏ РєРІР°СЂС‚РёСЂС‹ РІР°Р¶РЅРѕ СЃРѕС…СЂР°РЅРёС‚СЊ Р±Р°Р»Р°РЅСЃ РјРµР¶РґСѓ СѓСЋС‚РѕРј, С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕСЃС‚СЊСЋ Рё РІРёР·СѓР°Р»СЊРЅРѕР№ С‡РёСЃС‚РѕС‚РѕР№",
+    Р”РѕРј: "РґР»СЏ РґРѕРјР° РІР°Р¶РЅРѕ СЃРѕР±СЂР°С‚СЊ С†РµР»СЊРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ Р¶РёР·РЅРё: РѕР±С‰РёРµ Р·РѕРЅС‹, РїСЂРёРІР°С‚РЅРѕСЃС‚СЊ, СЃРІРµС‚ Рё РјР°С‚РµСЂРёР°Р»С‹",
+    РљРѕРјРјРµСЂС†РёСЏ: "РґР»СЏ РєРѕРјРјРµСЂС‡РµСЃРєРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РѕСЃРѕР±РµРЅРЅРѕ РІР°Р¶РЅС‹ РїРµСЂРІРѕРµ РІРїРµС‡Р°С‚Р»РµРЅРёРµ, РЅР°РІРёРіР°С†РёСЏ Рё РѕС‰СѓС‰РµРЅРёРµ РґРѕРІРµСЂРёСЏ",
+    РћС„РёСЃ: "РґР»СЏ РѕС„РёСЃР° РІР°Р¶РЅРѕ СЃРѕРІРјРµСЃС‚РёС‚СЊ СЃС‚Р°С‚СѓСЃ, РєРѕРЅС†РµРЅС‚СЂР°С†РёСЋ РєРѕРјР°РЅРґС‹ Рё РєРѕРјС„РѕСЂС‚РЅСѓСЋ СЂР°Р±РѕС‡СѓСЋ СЃСЂРµРґСѓ",
+  };
+
+  const priorityText = {
+    РџСЂР°РєС‚РёС‡РЅРѕСЃС‚СЊ:
+      "Р°РєС†РµРЅС‚ СЃС‚РѕРёС‚ СЃРґРµР»Р°С‚СЊ РЅР° РїРѕРЅСЏС‚РЅРѕР№ РїР»Р°РЅРёСЂРѕРІРєРµ, РґРѕР»РіРѕРІРµС‡РЅС‹С… РјР°С‚РµСЂРёР°Р»Р°С… Рё РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРјРѕР№ СЂРµР°Р»РёР·Р°С†РёРё",
+    Р­СЃС‚РµС‚РёРєР°:
+      "РіР»Р°РІРЅС‹Р№ С„РѕРєСѓСЃ вЂ” РІРёР·СѓР°Р»СЊРЅР°СЏ С†РµР»СЊРЅРѕСЃС‚СЊ, СЃРІРµС‚, РїСЂРѕРїРѕСЂС†РёРё Рё СЌРјРѕС†РёРѕРЅР°Р»СЊРЅРѕРµ РІРїРµС‡Р°С‚Р»РµРЅРёРµ",
+    РЎС‚Р°С‚СѓСЃ:
+      "Р»СѓС‡С€Рµ СЂР°СЃРєСЂС‹РІР°С‚СЊ РїСЂРѕРµРєС‚ С‡РµСЂРµР· РїСЂРµРјРёР°Р»СЊРЅС‹Рµ РјР°С‚РµСЂРёР°Р»С‹, РІС‹СЂР°Р·РёС‚РµР»СЊРЅС‹Рµ РґРµС‚Р°Р»Рё Рё СЃРёР»СЊРЅСѓСЋ РїРѕРґР°С‡Сѓ",
+    "РџРѕРґ РІР°СЃ":
+      "СЃС†РµРЅР°СЂРёР№ СЃС‚РѕРёС‚ СЃС‚СЂРѕРёС‚СЊ РІРѕРєСЂСѓРі РїСЂРёРІС‹С‡РµРє, СЂРёС‚РјР° Р¶РёР·РЅРё Рё РёРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹С… Р·Р°РґР°С‡",
+  };
+
+  const moodText = {
+    "РўС‘РїР»С‹Р№ РјРёРЅРёРјР°Р»РёР·Рј":
+      "РїРѕРґРѕР№РґСѓС‚ РЅР°С‚СѓСЂР°Р»СЊРЅС‹Рµ С„Р°РєС‚СѓСЂС‹, РјСЏРіРєРёР№ СЂР°СЃСЃРµСЏРЅРЅС‹Р№ СЃРІРµС‚, РґРµСЂРµРІРѕ, С‚РµРєСЃС‚РёР»СЊ Рё СЃРїРѕРєРѕР№РЅР°СЏ С‚С‘РїР»Р°СЏ РїР°Р»РёС‚СЂР°",
+    "Р“Р»СѓР±РѕРєРёР№ РєРѕРЅС‚СЂР°СЃС‚":
+      "РїРѕРґРѕР№РґСѓС‚ РіСЂР°С„РёС‚РѕРІС‹Рµ РѕС‚С‚РµРЅРєРё, РєР°РјРµРЅСЊ, РјРµС‚Р°Р»Р», Р°РєС†РµРЅС‚РЅС‹Р№ СЃРІРµС‚ Рё Р±РѕР»РµРµ РґСЂР°РјР°С‚РёС‡РЅР°СЏ Р°С‚РјРѕСЃС„РµСЂР°",
+    "РЎРѕРІСЂРµРјРµРЅРЅР°СЏ РєР»Р°СЃСЃРёРєР°":
+      "РїРѕРґРѕР№РґСѓС‚ СЃРїРѕРєРѕР№РЅС‹Рµ Р±Р»Р°РіРѕСЂРѕРґРЅС‹Рµ РѕС‚С‚РµРЅРєРё, РјСЂР°РјРѕСЂ, Р»Р°С‚СѓРЅСЊ, РјРѕР»РґРёРЅРіРё Рё РјСЏРіРєР°СЏ СЃРёРјРјРµС‚СЂРёСЏ",
+    "РњСЏРіРєРёР№ РјРѕРґРµСЂРЅ":
+      "РїРѕРґРѕР№РґСѓС‚ СЃРІРµС‚Р»С‹Рµ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё, РїР»Р°РІРЅС‹Рµ С„РѕСЂРјС‹, Р°СЂС…РёС‚РµРєС‚СѓСЂРЅР°СЏ РїРѕРґСЃРІРµС‚РєР° Рё РІРѕР·РґСѓС€РЅР°СЏ РєРѕРјРїРѕР·РёС†РёСЏ",
+  };
+
+  const levelText = {
+    РљРѕРјС„РѕСЂС‚:
+      "С„РѕСЂРјР°С‚ РјРѕР¶РЅРѕ РґРµСЂР¶Р°С‚СЊ РІ СЂР°С†РёРѕРЅР°Р»СЊРЅРѕРј Р±СЋРґР¶РµС‚Рµ Р±РµР· РїРѕС‚РµСЂРё РѕС‰СѓС‰РµРЅРёСЏ РїСЂРѕРґСѓРјР°РЅРЅРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°",
+    Р‘РёР·РЅРµСЃ:
+      "Р»СѓС‡С€Рµ РІС‹Р±СЂР°С‚СЊ Р±Р°Р»Р°РЅСЃ РјРµР¶РґСѓ СЌСЃС‚РµС‚РёРєРѕР№, СЃСЂРѕРєР°РјРё, РєРѕРјРїР»РµРєС‚Р°С†РёРµР№ Рё РєР°С‡РµСЃС‚РІРѕРј СЂРµР°Р»РёР·Р°С†РёРё",
+    РџСЂРµРјРёСѓРј:
+      "СЃС‚РѕРёС‚ Р·Р°Р»РѕР¶РёС‚СЊ Р±РѕР»РµРµ РіР»СѓР±РѕРєСѓСЋ РґРµС‚Р°Р»РёР·Р°С†РёСЋ, РєРѕРјРїР»РµРєС‚Р°С†РёСЋ Рё Р°РІС‚РѕСЂСЃРєРёР№ РєРѕРЅС‚СЂРѕР»СЊ СЂРµС€РµРЅРёР№",
+    "РџРѕРґ РІР°СЃ":
+      "С„РѕСЂРјР°С‚ Р»СѓС‡С€Рµ РѕРїСЂРµРґРµР»РёС‚СЊ РїРѕСЃР»Рµ СѓС‚РѕС‡РЅРµРЅРёСЏ РїР»РѕС‰Р°РґРё, Р±СЋРґР¶РµС‚Р°, СЃСЂРѕРєРѕРІ Рё СЃС†РµРЅР°СЂРёСЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ",
+  };
+
+  return {
+    title: "РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РІС‹РІРѕРґ",
+    text: `${objectText[answers.object] || "РґР»СЏ РїСЂРѕРµРєС‚Р° РІР°Р¶РЅРѕ СЃРѕР±СЂР°С‚СЊ С†РµР»СЊРЅСѓСЋ СЃРёСЃС‚РµРјСѓ СЂРµС€РµРЅРёР№"}. ${
+      priorityText[answers.priority] || "РІР°Р¶РЅРѕ РѕРїСЂРµРґРµР»РёС‚СЊ РіР»Р°РІРЅС‹Р№ РїСЂРёРѕСЂРёС‚РµС‚ РїСЂРѕРµРєС‚Р°"
+    }. ${moodText[answers.mood] || "Р°С‚РјРѕСЃС„РµСЂР° Р±СѓРґРµС‚ СѓС‚РѕС‡РЅСЏС‚СЊСЃСЏ РїРѕСЃР»Рµ СЂР°Р·Р±РѕСЂР° РІРІРѕРґРЅС‹С…"}. ${
+      levelText[answers.level] || "С„РѕСЂРјР°С‚ СЂРµР°Р»РёР·Р°С†РёРё Р»СѓС‡С€Рµ РѕРїСЂРµРґРµР»РёС‚СЊ РїРѕСЃР»Рµ РєРѕРЅСЃСѓР»СЊС‚Р°С†РёРё"
+    }.`,
+    bullets: [
+      getLightAdvice(answers.mood),
+      getMaterialAdvice(answers.mood),
+      getProcessAdvice(answers.priority),
+    ],
+  };
+}
+
+function getLightAdvice(mood) {
+  if (mood === "Р“Р»СѓР±РѕРєРёР№ РєРѕРЅС‚СЂР°СЃС‚") return "РЎРІРµС‚: Р°РєС†РµРЅС‚РЅС‹Р№, РЅР°РїСЂР°РІР»РµРЅРЅС‹Р№, СЃ РіР»СѓР±РѕРєРёРјРё С‚РµРЅСЏРјРё.";
+  if (mood === "РЎРѕРІСЂРµРјРµРЅРЅР°СЏ РєР»Р°СЃСЃРёРєР°") return "РЎРІРµС‚: РјСЏРіРєРёР№, РґРµРєРѕСЂР°С‚РёРІРЅС‹Р№, СЃ РѕС‰СѓС‰РµРЅРёРµРј СЃС‚Р°С‚СѓСЃР°.";
+  if (mood === "РњСЏРіРєРёР№ РјРѕРґРµСЂРЅ") return "РЎРІРµС‚: РІРѕР·РґСѓС€РЅС‹Р№, Р°СЂС…РёС‚РµРєС‚СѓСЂРЅС‹Р№, Р±РµР· РІРёР·СѓР°Р»СЊРЅРѕРіРѕ С€СѓРјР°.";
+  return "РЎРІРµС‚: С‚С‘РїР»С‹Р№, СЂР°СЃСЃРµСЏРЅРЅС‹Р№, РєРѕРјС„РѕСЂС‚РЅС‹Р№ РґР»СЏ Р¶РёР·РЅРё.";
+}
+
+function getMaterialAdvice(mood) {
+  if (mood === "Р“Р»СѓР±РѕРєРёР№ РєРѕРЅС‚СЂР°СЃС‚") return "РњР°С‚РµСЂРёР°Р»С‹: РєР°РјРµРЅСЊ, РіСЂР°С„РёС‚, РјРµС‚Р°Р»Р», РїР»РѕС‚РЅС‹Рµ С„Р°РєС‚СѓСЂС‹.";
+  if (mood === "РЎРѕРІСЂРµРјРµРЅРЅР°СЏ РєР»Р°СЃСЃРёРєР°") return "РњР°С‚РµСЂРёР°Р»С‹: РјСЂР°РјРѕСЂ, Р»Р°С‚СѓРЅСЊ, РґРµСЂРµРІРѕ, СЃРїРѕРєРѕР№РЅС‹Рµ РѕС‚С‚РµРЅРєРё.";
+  if (mood === "РњСЏРіРєРёР№ РјРѕРґРµСЂРЅ") return "РњР°С‚РµСЂРёР°Р»С‹: РјРёРєСЂРѕС†РµРјРµРЅС‚, СЃС‚РµРєР»Рѕ, СЃРІРµС‚Р»РѕРµ РґРµСЂРµРІРѕ, С‚РµРєСЃС‚РёР»СЊ.";
+  return "РњР°С‚РµСЂРёР°Р»С‹: РґРµСЂРµРІРѕ, С‚РµРєСЃС‚РёР»СЊ, РєРµСЂР°РјРёРєР°, РЅР°С‚СѓСЂР°Р»СЊРЅС‹Рµ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё.";
+}
+
+function getProcessAdvice(priority) {
+  if (priority === "РџСЂР°РєС‚РёС‡РЅРѕСЃС‚СЊ") return "РџСЂРѕС†РµСЃСЃ: РЅР°С‡Р°С‚СЊ СЃРѕ СЃРјРµС‚С‹, СЃСЂРѕРєРѕРІ Рё РїРѕРЅСЏС‚РЅРѕРіРѕ РїР»Р°РЅР° СЂРµР°Р»РёР·Р°С†РёРё.";
+  if (priority === "Р­СЃС‚РµС‚РёРєР°") return "РџСЂРѕС†РµСЃСЃ: СЃРЅР°С‡Р°Р»Р° СЃРѕР±СЂР°С‚СЊ РІРёР·СѓР°Р»СЊРЅСѓСЋ РєРѕРЅС†РµРїС†РёСЋ Рё СЃС†РµРЅР°СЂРёРё СЃРІРµС‚Р°.";
+  if (priority === "РЎС‚Р°С‚СѓСЃ") return "РџСЂРѕС†РµСЃСЃ: Р·Р°СЂР°РЅРµРµ Р·Р°Р»РѕР¶РёС‚СЊ РєРѕРјРїР»РµРєС‚Р°С†РёСЋ Рё РґРµС‚Р°Р»РёР·Р°С†РёСЋ РјР°С‚РµСЂРёР°Р»РѕРІ.";
+  return "РџСЂРѕС†РµСЃСЃ: РЅР°С‡Р°С‚СЊ СЃ РёРЅС‚РµСЂРІСЊСЋ РїРѕ РїСЂРёРІС‹С‡РєР°Рј, Р·Р°РґР°С‡Р°Рј Рё РѕР±СЂР°Р·Сѓ Р¶РёР·РЅРё.";
+}
+
+------------------------------------------------------------------------------------------
+ФАЙЛ: C:\Code\4sn\4sn\src\data\previewLibrary.js
+------------------------------------------------------------------------------------------
+export function getPreviewImage(answers) {
+  const object = answers.object?.toLowerCase() || "";
+  const mood = answers.mood?.toLowerCase() || "";
+
+  // РљР’РђР РўРР Рђ
+  if (object.includes("РєРІР°СЂС‚")) {
+    if (mood.includes("С‚С‘Рї")) {
+      return "/previews/library/apartment-warm.jpg";
+    }
+
+    if (mood.includes("РєРѕРЅС‚")) {
+      return "/previews/library/apartment-contrast.jpg";
+    }
+
+    return "/previews/library/apartment-soft.jpg";
+  }
+
+  // Р”РћРњ
+  if (object.includes("РґРѕРј")) {
+    if (mood.includes("РєР»Р°СЃСЃ")) {
+      return "/previews/library/house-classic.jpg";
+    }
+
+    if (mood.includes("РєРѕРЅС‚")) {
+      return "/previews/library/house-contrast.jpg";
+    }
+
+    return "/previews/library/house-warm.jpg";
+  }
+
+  // РљРћРњРњР•Р Р¦РРЇ
+  if (object.includes("РєРѕРјРјРµСЂ")) {
+    if (mood.includes("РєР»Р°СЃСЃ")) {
+      return "/previews/library/commercial-classic.jpg";
+    }
+
+    if (mood.includes("РєРѕРЅС‚")) {
+      return "/previews/library/commercial-contrast.jpg";
+    }
+
+    return "/previews/library/commercial-soft.jpg";
+  }
+
+  // РћР¤РРЎ
+  if (object.includes("РѕС„РёСЃ")) {
+    if (mood.includes("РєРѕРЅС‚")) {
+      return "/previews/library/office-contrast.jpg";
+    }
+
+    if (mood.includes("РєР»Р°СЃСЃ")) {
+      return "/previews/library/office-classic.jpg";
+    }
+
+    return "/previews/library/office-soft.jpg";
+  }
+
+  return "/previews/warm.jpg";
+}
+
+------------------------------------------------------------------------------------------
+ФАЙЛ: C:\Code\4sn\4sn\src\data\solutions.js
+------------------------------------------------------------------------------------------
+export const constructorSteps = [
+  {
+    title: "РўРёРї РѕР±СЉРµРєС‚Р°",
+    desc: "Р’С‹Р±РµСЂРёС‚Рµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ, РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ РЅСѓР¶РЅРѕ РїРѕРґРѕР±СЂР°С‚СЊ СЃС†РµРЅР°СЂРёРё.",
+    key: "object",
+    options: [
+      ["РљРІР°СЂС‚РёСЂР°", "Р”Р»СЏ Р¶РёР·РЅРё, СЃРµРјСЊРё РёР»Рё СЃРґР°С‡Рё"],
+      ["Р”РѕРј", "РРЅС‚РµСЂСЊРµСЂ, РєРѕРјРїР»РµРєС‚Р°С†РёСЏ Рё СЂРµР°Р»РёР·Р°С†РёСЏ"],
+      ["РљРѕРјРјРµСЂС†РёСЏ", "РџСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РґР»СЏ РїСЂРѕРґР°Р¶ Рё РІРїРµС‡Р°С‚Р»РµРЅРёСЏ"],
+      ["РћС„РёСЃ", "РљРѕРјР°РЅРґР°, СЃС‚Р°С‚СѓСЃ Рё СЌС„С„РµРєС‚РёРІРЅРѕСЃС‚СЊ"],
+    ],
+  },
+  {
+    title: "Р“Р»Р°РІРЅР°СЏ Р·Р°РґР°С‡Р°",
+    desc: "Р§С‚Рѕ РґРѕР»Р¶РЅРѕ СЂР°Р±РѕС‚Р°С‚СЊ Р»СѓС‡С€Рµ РІСЃРµРіРѕ?",
+    key: "priority",
+    options: [
+      ["РџСЂР°РєС‚РёС‡РЅРѕСЃС‚СЊ", "Р‘СЋРґР¶РµС‚, СѓРґРѕР±СЃС‚РІРѕ, РґРѕР»РіРѕРІРµС‡РЅРѕСЃС‚СЊ"],
+      ["Р­СЃС‚РµС‚РёРєР°", "РЎРІРµС‚, РєРѕРјРїРѕР·РёС†РёСЏ Рё Р°С‚РјРѕСЃС„РµСЂР°"],
+      ["РЎС‚Р°С‚СѓСЃ", "РњР°С‚РµСЂРёР°Р»С‹, РґРµС‚Р°Р»Рё, РІРїРµС‡Р°С‚Р»РµРЅРёРµ"],
+      ["РџРѕРґ РІР°СЃ", "РџРѕРґ РїСЂРёРІС‹С‡РєРё, СЃРµРјСЊСЋ Рё СЂРёС‚Рј Р¶РёР·РЅРё"],
+    ],
+  },
+  {
+    title: "РђС‚РјРѕСЃС„РµСЂР°",
+    desc: "Р’С‹Р±РµСЂРёС‚Рµ РІРёР·СѓР°Р»СЊРЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ Р±СѓРґСѓС‰РµРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°.",
+    key: "mood",
+    options: [
+      ["РўС‘РїР»С‹Р№ РјРёРЅРёРјР°Р»РёР·Рј", "РњСЏРіРєРёР№ СЃРІРµС‚ Рё РЅР°С‚СѓСЂР°Р»СЊРЅС‹Рµ С„Р°РєС‚СѓСЂС‹"],
+      ["Р“Р»СѓР±РѕРєРёР№ РєРѕРЅС‚СЂР°СЃС‚", "Р“СЂР°С„РёС‚, РєР°РјРµРЅСЊ, РјРµС‚Р°Р»Р» Рё Р°РєС†РµРЅС‚РЅС‹Р№ СЃРІРµС‚"],
+      ["РЎРѕРІСЂРµРјРµРЅРЅР°СЏ РєР»Р°СЃСЃРёРєР°", "Р­Р»РµРіР°РЅС‚РЅРѕСЃС‚СЊ Р±РµР· РІРёР·СѓР°Р»СЊРЅРѕРіРѕ С€СѓРјР°"],
+      ["РњСЏРіРєРёР№ РјРѕРґРµСЂРЅ", "РЎРІРµС‚Р»Р°СЏ Р°СЂС…РёС‚РµРєС‚СѓСЂРЅР°СЏ СЌСЃС‚РµС‚РёРєР°"],
+    ],
+  },
+  {
+    title: "РЈСЂРѕРІРµРЅСЊ СЂРµР°Р»РёР·Р°С†РёРё",
+    desc: "Р’С‹Р±РµСЂРёС‚Рµ С„РѕСЂРјР°С‚ СЂРµР°Р»РёР·Р°С†РёРё РїСЂРѕРµРєС‚Р°.",
+    key: "level",
+    options: [
+      ["РљРѕРјС„РѕСЂС‚", "РџРѕРЅСЏС‚РЅС‹Р№ Р±СЋРґР¶РµС‚ Рё СЃСЂРѕРєРё"],
+      ["Р‘РёР·РЅРµСЃ", "Р‘Р°Р»Р°РЅСЃ РґРёР·Р°Р№РЅР° Рё СЂРµР°Р»РёР·Р°С†РёРё"],
+      ["РџСЂРµРјРёСѓРј", "Р”РµС‚Р°Р»РёР·Р°С†РёСЏ Рё РєРѕРјРїР»РµРєС‚Р°С†РёСЏ"],
+      ["РџРѕРґ РІР°СЃ", "РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ РїСЂРѕРµРєС‚Р°"],
+    ],
+  },
+];
+
+export const recommendations = {
+  РЎС‚Р°С‚СѓСЃ: "РЎС‚Р°С‚СѓСЃРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ + РїСЂРµРјРёР°Р»СЊРЅР°СЏ РєРѕРјРїР»РµРєС‚Р°С†РёСЏ",
+  Р­СЃС‚РµС‚РёРєР°: "Р­СЃС‚РµС‚РёС‡РµСЃРєРёР№ СЃС†РµРЅР°СЂРёР№ + С†РµР»СЊРЅР°СЏ Р°С‚РјРѕСЃС„РµСЂР°",
+  "РџРѕРґ РІР°СЃ": "РџРµСЂСЃРѕРЅР°Р»СЊРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ РїРѕРґ РѕР±СЂР°Р· Р¶РёР·РЅРё",
+  default: "Р Р°С†РёРѕРЅР°Р»СЊРЅС‹Р№ СЃС†РµРЅР°СЂРёР№ + РєРѕРЅС‚СЂРѕР»СЊ СЂРµР°Р»РёР·Р°С†РёРё",
+};
+
+==========================================================================================
+9. КОМПОНЕНТЫ И СТИЛИ ПО НАЗВАНИЯМ
+==========================================================================================
+src\components\Projects.jsx
+src\styles\projects.css
+
+
+==========================================================================================
+10. МАРШРУТЫ И ПОДКЛЮЧЕНИЕ СТРАНИЦ
+==========================================================================================
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 28
+
+  const url = new URL(window.location.href);
+>   const isHomePage =
+    url.pathname === "/" || url.pathname.endsWith("/index.html");
+
+  return (
+    isHomePage &&
+    (url.searchParams.get("openLead") === "1" ||
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 32
+
+  return (
+>     isHomePage &&
+    (url.searchParams.get("openLead") === "1" ||
+      url.searchParams.get("modal") === "lead")
+  );
+}
+
+------------------------------------------------------------
+
+
+==========================================================================================
+11. ФОРМА ЗАЯВКИ И ЕЁ ОТКРЫТИЕ
+==========================================================================================
+
+Файл: C:\Code\4sn\4sn\src\App.jsx
+Строка: 8
+import Services from "./components/Services";
+import useSmoothScroll from "./hooks/useSmoothScroll";
+import useReveal from "./hooks/useReveal";
+> import Contacts from "./components/Contacts";
+import Projects from "./components/Projects";
+import About from "./components/About";
+import ConsentBanner from "./components/ConsentBanner";
+import { initAttribution } from "./services/attributionService";
+
+
+
+export default function App() {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\App.jsx
+Строка: 32
+      <Projects />
+      <Services />
+      <Constructor />
+>       <Contacts />
+    </>
+  );
+}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\About.jsx
+Строка: 102
+              </div>
+
+              <a
+>                 href="#contacts"
+                className="about-contact-button"
+                onClick={() => trackMainCta("about_section")}
+              >
+                <strong>Обсудить проект</strong>
+              </a>
+            </div>
+          </div>
+        )}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\About.jsx
+Строка: 103
+
+              <a
+                href="#contacts"
+>                 className="about-contact-button"
+                onClick={() => trackMainCta("about_section")}
+              >
+                <strong>Обсудить проект</strong>
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 4
+import { useEffect, useState } from "react";
+import "../styles/constructor.css";
+
+> import { getLeadResponseMessage } from "../services/workTimeService";
+import { generateAiSummary } from "../data/aiSummary";
+import { constructorSteps, recommendations } from "../data/solutions";
+import { atmosphereThemes } from "../data/themes";
+import { getPreviewImage } from "../data/previewLibrary";
+import { sendLeadToCRM } from "../services/leadService";
+import { trackEvent } from "../services/analyticsService";
+
+const analysisSteps = [
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 9
+import { constructorSteps, recommendations } from "../data/solutions";
+import { atmosphereThemes } from "../data/themes";
+import { getPreviewImage } from "../data/previewLibrary";
+> import { sendLeadToCRM } from "../services/leadService";
+import { trackEvent } from "../services/analyticsService";
+
+const analysisSteps = [
+  "Считываем параметры пространства...",
+  "Сопоставляем сценарии использования...",
+  "Подбираем атмосферу проекта...",
+  "Проверяем совместимость материалов...",
+  "Формируем рекомендации...",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 26
+  const [result, setResult] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [visible, setVisible] = useState(false);
+>   const [leadStatus, setLeadStatus] = useState(null);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [analysisMessages, setAnalysisMessages] = useState([
+    "Подготавливаем систему анализа...",
+  ]);
+
+  const [form, setForm] = useState({
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 27
+  const [analyzing, setAnalyzing] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+>   const [leadSubmitting, setLeadSubmitting] = useState(false);
+
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [analysisMessages, setAnalysisMessages] = useState([
+    "Подготавливаем систему анализа...",
+  ]);
+
+  const [form, setForm] = useState({
+    name: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 36
+
+  const [form, setForm] = useState({
+    name: "",
+>     contact: "",
+  });
+
+  const [answers, setAnswers] = useState({
+    object: "",
+    priority: "",
+    mood: "",
+    level: "",
+  });
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 82
+      [current.key]: value,
+    }));
+
+>     setLeadStatus(null);
+
+    trackEvent("constructor_select", {
+      step: current.key,
+      value,
+    });
+  }
+
+  function goToStep(index) {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 96
+    setResult(false);
+    setAnalyzing(false);
+    setStep(index);
+>     setLeadStatus(null);
+  }
+
+  function nextStep() {
+    if (!selected) return;
+
+    setLeadStatus(null);
+
+    if (step < constructorSteps.length - 1) {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 102
+  function nextStep() {
+    if (!selected) return;
+
+>     setLeadStatus(null);
+
+    if (step < constructorSteps.length - 1) {
+      setStep(step + 1);
+      return;
+    }
+
+    setAnalyzing(true);
+    setAnalysisMessages([analysisSteps[0]]);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 161
+  function prevStep() {
+    if (analyzing) return;
+
+>     setLeadStatus(null);
+
+    if (result) {
+      setResult(false);
+      return;
+    }
+
+    if (step > 0) {
+      setStep(step - 1);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 173
+    }
+  }
+
+>   async function handleLeadSubmit() {
+    if (leadSubmitting) return;
+
+    const name = form.name.trim();
+    const contact = form.contact.trim();
+
+    if (!name || !contact) {
+      setLeadStatus({
+        title: "Заполните контакты",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 174
+  }
+
+  async function handleLeadSubmit() {
+>     if (leadSubmitting) return;
+
+    const name = form.name.trim();
+    const contact = form.contact.trim();
+
+    if (!name || !contact) {
+      setLeadStatus({
+        title: "Заполните контакты",
+        text: "Укажите имя и телефон или Telegram для связи.",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 177
+    if (leadSubmitting) return;
+
+    const name = form.name.trim();
+>     const contact = form.contact.trim();
+
+    if (!name || !contact) {
+      setLeadStatus({
+        title: "Заполните контакты",
+        text: "Укажите имя и телефон или Telegram для связи.",
+        mode: "offline",
+      });
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 179
+    const name = form.name.trim();
+    const contact = form.contact.trim();
+
+>     if (!name || !contact) {
+      setLeadStatus({
+        title: "Заполните контакты",
+        text: "Укажите имя и телефон или Telegram для связи.",
+        mode: "offline",
+      });
+
+      return;
+    }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 180
+    const contact = form.contact.trim();
+
+    if (!name || !contact) {
+>       setLeadStatus({
+        title: "Заполните контакты",
+        text: "Укажите имя и телефон или Telegram для связи.",
+        mode: "offline",
+      });
+
+      return;
+    }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 189
+      return;
+    }
+
+>     const lead = {
+      name,
+      phone: contact,
+      contact,
+
+      service: "Карта решений / Конструктор",
+      formName: "Форма справа от конструктора",
+      channel: "website_form",
+      entryPoint: "constructor_sidebar_after_result",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 191
+
+    const lead = {
+      name,
+>       phone: contact,
+      contact,
+
+      service: "Карта решений / Конструктор",
+      formName: "Форма справа от конструктора",
+      channel: "website_form",
+      entryPoint: "constructor_sidebar_after_result",
+
+      object: answers.object,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 192
+    const lead = {
+      name,
+      phone: contact,
+>       contact,
+
+      service: "Карта решений / Конструктор",
+      formName: "Форма справа от конструктора",
+      channel: "website_form",
+      entryPoint: "constructor_sidebar_after_result",
+
+      object: answers.object,
+      priority: answers.priority,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 195
+      contact,
+
+      service: "Карта решений / Конструктор",
+>       formName: "Форма справа от конструктора",
+      channel: "website_form",
+      entryPoint: "constructor_sidebar_after_result",
+
+      object: answers.object,
+      priority: answers.priority,
+      mood: answers.mood,
+      level: answers.level,
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 197
+      service: "Карта решений / Конструктор",
+      formName: "Форма справа от конструктора",
+      channel: "website_form",
+>       entryPoint: "constructor_sidebar_after_result",
+
+      object: answers.object,
+      priority: answers.priority,
+      mood: answers.mood,
+      level: answers.level,
+
+      recommendation,
+      previewImage,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 217
+      ].join("\n"),
+    };
+
+>     trackEvent("lead_form_submit", lead);
+
+    setLeadSubmitting(true);
+    setLeadStatus(null);
+
+    try {
+      await sendLeadToCRM(lead);
+
+      setLeadStatus(getLeadResponseMessage());
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 219
+
+    trackEvent("lead_form_submit", lead);
+
+>     setLeadSubmitting(true);
+    setLeadStatus(null);
+
+    try {
+      await sendLeadToCRM(lead);
+
+      setLeadStatus(getLeadResponseMessage());
+
+      setForm({
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 220
+    trackEvent("lead_form_submit", lead);
+
+    setLeadSubmitting(true);
+>     setLeadStatus(null);
+
+    try {
+      await sendLeadToCRM(lead);
+
+      setLeadStatus(getLeadResponseMessage());
+
+      setForm({
+        name: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 223
+    setLeadStatus(null);
+
+    try {
+>       await sendLeadToCRM(lead);
+
+      setLeadStatus(getLeadResponseMessage());
+
+      setForm({
+        name: "",
+        contact: "",
+      });
+    } catch (error) {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 225
+    try {
+      await sendLeadToCRM(lead);
+
+>       setLeadStatus(getLeadResponseMessage());
+
+      setForm({
+        name: "",
+        contact: "",
+      });
+    } catch (error) {
+      console.error("Constructor lead submit error:", error);
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 229
+
+      setForm({
+        name: "",
+>         contact: "",
+      });
+    } catch (error) {
+      console.error("Constructor lead submit error:", error);
+
+      setLeadStatus({
+        title: "Заявка не отправилась",
+        text: "Попробуйте ещё раз или напишите нам в мессенджер.",
+        mode: "offline",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 232
+        contact: "",
+      });
+    } catch (error) {
+>       console.error("Constructor lead submit error:", error);
+
+      setLeadStatus({
+        title: "Заявка не отправилась",
+        text: "Попробуйте ещё раз или напишите нам в мессенджер.",
+        mode: "offline",
+      });
+    } finally {
+      setLeadSubmitting(false);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 234
+    } catch (error) {
+      console.error("Constructor lead submit error:", error);
+
+>       setLeadStatus({
+        title: "Заявка не отправилась",
+        text: "Попробуйте ещё раз или напишите нам в мессенджер.",
+        mode: "offline",
+      });
+    } finally {
+      setLeadSubmitting(false);
+    }
+  }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 240
+        mode: "offline",
+      });
+    } finally {
+>       setLeadSubmitting(false);
+    }
+  }
+
+  return (
+    <section
+      id="constructor"
+      className={
+        visible
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 484
+            </div>
+
+            <form
+>               className={result ? "lead-form active" : "lead-form"}
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <h3>Оставьте контакт</h3>
+              <p>
+                Специалист перезвонит, уточнит детали и подскажет следующий
+                шаг.
+              </p>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 503
+
+              <input
+                placeholder="Телефон или Telegram"
+>                 value={form.contact}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, contact: e.target.value }))
+                }
+              />
+
+              <button
+                type="button"
+                onClick={handleLeadSubmit}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 505
+                placeholder="Телефон или Telegram"
+                value={form.contact}
+                onChange={(e) =>
+>                   setForm((prev) => ({ ...prev, contact: e.target.value }))
+                }
+              />
+
+              <button
+                type="button"
+                onClick={handleLeadSubmit}
+                disabled={leadSubmitting}
+              >
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 511
+
+              <button
+                type="button"
+>                 onClick={handleLeadSubmit}
+                disabled={leadSubmitting}
+              >
+                {leadSubmitting ? "Отправляем..." : "Жду звонка"}
+              </button>
+
+              {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 512
+              <button
+                type="button"
+                onClick={handleLeadSubmit}
+>                 disabled={leadSubmitting}
+              >
+                {leadSubmitting ? "Отправляем..." : "Жду звонка"}
+              </button>
+
+              {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 514
+                onClick={handleLeadSubmit}
+                disabled={leadSubmitting}
+              >
+>                 {leadSubmitting ? "Отправляем..." : "Жду звонка"}
+              </button>
+
+              {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+                </div>
+              )}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 517
+                {leadSubmitting ? "Отправляем..." : "Жду звонка"}
+              </button>
+
+>               {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+                </div>
+              )}
+
+              <small className="form-consent">
+                Нажимая кнопку, вы соглашаетесь с{" "}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 518
+              </button>
+
+              {leadStatus && (
+>                 <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+                </div>
+              )}
+
+              <small className="form-consent">
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 519
+
+              {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+>                   <b>{leadStatus.title}</b>
+                  <p>{leadStatus.text}</p>
+                </div>
+              )}
+
+              <small className="form-consent">
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+                  политикой конфиденциальности
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Constructor.jsx
+Строка: 520
+              {leadStatus && (
+                <div className={`lead-status ${leadStatus.mode}`}>
+                  <b>{leadStatus.title}</b>
+>                   <p>{leadStatus.text}</p>
+                </div>
+              )}
+
+              <small className="form-consent">
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a href="/docs/privacy.pdf" target="_blank" rel="noreferrer">
+                  политикой конфиденциальности
+                </a>{" "}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 2
+import { useState } from "react";
+> import "../styles/contacts.css";
+import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackLead,
+  trackContactClick,
+} from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
+export default function Contacts() {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 3
+import { useState } from "react";
+import "../styles/contacts.css";
+> import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackLead,
+  trackContactClick,
+} from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
+export default function Contacts() {
+  const [form, setForm] = useState({
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 5
+import "../styles/contacts.css";
+import { sendLeadToCRM } from "../services/leadService";
+import {
+>   trackLead,
+  trackContactClick,
+} from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
+export default function Contacts() {
+  const [form, setForm] = useState({
+    name: "",
+    contact: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 6
+import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackLead,
+>   trackContactClick,
+} from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
+export default function Contacts() {
+  const [form, setForm] = useState({
+    name: "",
+    contact: "",
+  });
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 10
+} from "../services/analyticsService";
+import { Send, Camera, MessageCircle } from "lucide-react";
+
+> export default function Contacts() {
+  const [form, setForm] = useState({
+    name: "",
+    contact: "",
+  });
+
+  async function handleSubmit() {
+    if (!form.name || !form.contact) {
+      alert("Укажите имя и телефон.");
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 13
+export default function Contacts() {
+  const [form, setForm] = useState({
+    name: "",
+>     contact: "",
+  });
+
+  async function handleSubmit() {
+    if (!form.name || !form.contact) {
+      alert("Укажите имя и телефон.");
+      return;
+    }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 17
+  });
+
+  async function handleSubmit() {
+>     if (!form.name || !form.contact) {
+      alert("Укажите имя и телефон.");
+      return;
+    }
+
+    await sendLeadToCRM({
+      source: "Форма консультации",
+      name: form.name,
+      contact: form.contact,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 22
+      return;
+    }
+
+>     await sendLeadToCRM({
+      source: "Форма консультации",
+      name: form.name,
+      contact: form.contact,
+      message: "Пользователь нажал Получить консультацию",
+    });
+
+    trackLead("contacts_form", {
+      name: form.name,
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 25
+    await sendLeadToCRM({
+      source: "Форма консультации",
+      name: form.name,
+>       contact: form.contact,
+      message: "Пользователь нажал Получить консультацию",
+    });
+
+    trackLead("contacts_form", {
+      name: form.name,
+    });
+
+    alert("Заявка отправлена. Мы свяжемся с вами.");
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 29
+      message: "Пользователь нажал Получить консультацию",
+    });
+
+>     trackLead("contacts_form", {
+      name: form.name,
+    });
+
+    alert("Заявка отправлена. Мы свяжемся с вами.");
+
+    setForm({
+      name: "",
+      contact: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 37
+
+    setForm({
+      name: "",
+>       contact: "",
+    });
+  }
+
+  return (
+    <section id="contacts" className="contacts reveal">
+      <div className="contacts-wrap">
+        <aside className="contacts-info">
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 42
+  }
+
+  return (
+>     <section id="contacts" className="contacts reveal">
+      <div className="contacts-wrap">
+        <aside className="contacts-info">
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+          <div className="contacts-socials">
+  <a
+    href="https://max.ru/id9725006609_bot?start=site_contacts"
+    target="_blank"
+    rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 43
+
+  return (
+    <section id="contacts" className="contacts reveal">
+>       <div className="contacts-wrap">
+        <aside className="contacts-info">
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+          <div className="contacts-socials">
+  <a
+    href="https://max.ru/id9725006609_bot?start=site_contacts"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 44
+  return (
+    <section id="contacts" className="contacts reveal">
+      <div className="contacts-wrap">
+>         <aside className="contacts-info">
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+          <div className="contacts-socials">
+  <a
+    href="https://max.ru/id9725006609_bot?start=site_contacts"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+    onClick={() => trackContactClick("max", "contacts_section")}
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 46
+      <div className="contacts-wrap">
+        <aside className="contacts-info">
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+>           <div className="contacts-socials">
+  <a
+    href="https://max.ru/id9725006609_bot?start=site_contacts"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+    onClick={() => trackContactClick("max", "contacts_section")}
+  >
+    <MessageCircle size={24} strokeWidth={2.4} />
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 48
+          <p className="eyebrow">НАШИ КАНАЛЫ</p>
+          <div className="contacts-socials">
+  <a
+>     href="https://max.ru/id9725006609_bot?start=site_contacts"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+    onClick={() => trackContactClick("max", "contacts_section")}
+  >
+    <MessageCircle size={24} strokeWidth={2.4} />
+  </a>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 52
+    target="_blank"
+    rel="noreferrer"
+    aria-label="MAX"
+>     onClick={() => trackContactClick("max", "contacts_section")}
+  >
+    <MessageCircle size={24} strokeWidth={2.4} />
+  </a>
+
+  <a
+    href="https://t.me/fouresolutions"
+    target="_blank"
+    rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 62
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Telegram"
+>     onClick={() => trackContactClick("telegram", "contacts_section")}
+  >
+    <Send size={24} strokeWidth={2.4} />
+  </a>
+
+  <a
+    href="https://www.instagram.com/four__solutions"  
+    target="_blank"
+    rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 72
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Instagram"
+>     onClick={() => trackContactClick("instagram", "contacts_section")}
+  >
+    <Camera size={24} strokeWidth={2.4} />
+  </a>
+</div>
+
+          <div className="contacts-company">
+            <p>ООО «ЧЕТЫРЕ РЕШЕНИЯ»</p>
+            <p>ИНН 9725006609</p>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 78
+  </a>
+</div>
+
+>           <div className="contacts-company">
+            <p>ООО «ЧЕТЫРЕ РЕШЕНИЯ»</p>
+            <p>ИНН 9725006609</p>
+            <p>КПП 772501001</p>
+            <p>ОГРН 1197746235400</p>
+          </div>
+
+          <div className="contacts-address">
+            <a
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 85
+            <p>ОГРН 1197746235400</p>
+          </div>
+
+>           <div className="contacts-address">
+            <a
+              className="contacts-map-link"
+              href="https://yandex.ru/maps/-/CPg-NClQ"
+              target="_blank"
+              rel="noreferrer"
+            >
+              г. Москва, Переведеновский переулок, д. 13, строение 13, помещ. 13
+            </a>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 87
+
+          <div className="contacts-address">
+            <a
+>               className="contacts-map-link"
+              href="https://yandex.ru/maps/-/CPg-NClQ"
+              target="_blank"
+              rel="noreferrer"
+            >
+              г. Москва, Переведеновский переулок, д. 13, строение 13, помещ. 13
+            </a>
+
+            <a
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 97
+
+            <a
+              href="mailto:info@4-solutions.ru"
+>               onClick={() => trackContactClick("email", "contacts_section")}
+            >
+              info@4-solutions.ru
+            </a>
+          </div>
+
+          <div className="contacts-links">
+            <a href="/docs/offer.pdf" target="_blank" rel="noreferrer">
+              Договор оферты
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 103
+            </a>
+          </div>
+
+>           <div className="contacts-links">
+            <a href="/docs/offer.pdf" target="_blank" rel="noreferrer">
+              Договор оферты
+            </a>
+
+            <a href="/docs/user-agreement.pdf" target="_blank" rel="noreferrer">
+              Пользовательское соглашение
+            </a>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 118
+          </div>
+        </aside>
+
+>         <div className="contacts-form">
+          <h2>
+            Получите консультацию
+            <br />и ответы на все вопросы
+          </h2>
+
+          <p>
+            Оставьте заявку — специалист свяжется с вами и подскажет следующий
+            шаг.
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 145
+              Укажите телефон
+              <input
+                placeholder="+7 (000) 000-00-00"
+>                 value={form.contact}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, contact: e.target.value }))
+                }
+              />
+            </label>
+
+            <button type="button" onClick={handleSubmit}>
+  Получить консультацию
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Contacts.jsx
+Строка: 147
+                placeholder="+7 (000) 000-00-00"
+                value={form.contact}
+                onChange={(e) =>
+>                   setForm((prev) => ({ ...prev, contact: e.target.value }))
+                }
+              />
+            </label>
+
+            <button type="button" onClick={handleSubmit}>
+  Получить консультацию
+</button>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 4
+import { useState } from "react";
+import "../styles/header.css";
+import {
+>   trackContactClick,
+  trackOpenContacts,
+} from "../services/analyticsService";
+import {
+  Building2,
+  Hammer,
+  Layers3,
+  PhoneCall,
+} from "lucide-react";
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 5
+import "../styles/header.css";
+import {
+  trackContactClick,
+>   trackOpenContacts,
+} from "../services/analyticsService";
+import {
+  Building2,
+  Hammer,
+  Layers3,
+  PhoneCall,
+} from "lucide-react";
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 15
+} from "lucide-react";
+
+export default function Header() {
+>   const [contactsOpen, setContactsOpen] = useState(false);
+
+  return (
+    <header className="header">
+      <a href="#" className="header-logo" aria-label="4 Решения">
+        <img src="/brand/logo.png" alt="4 Решения" />
+      </a>
+
+      <nav className="header-nav">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 45
+    Карта решений
+  </a>
+
+>   <a href="#contacts">
+    <i>
+      <PhoneCall size={15} strokeWidth={2.2} />
+    </i>
+    Контакты
+  </a>
+</nav>
+
+      <div className="header-actions">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 62
+  type="button"
+  className="header-button"
+  onClick={() => {
+>     setContactsOpen((prev) => !prev);
+    trackOpenContacts("header");
+  }}
+>
+  Обсудить проект <em>→</em>
+</button>
+
+        {contactsOpen && (
+          <div className="contact-popover">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 63
+  className="header-button"
+  onClick={() => {
+    setContactsOpen((prev) => !prev);
+>     trackOpenContacts("header");
+  }}
+>
+  Обсудить проект <em>→</em>
+</button>
+
+        {contactsOpen && (
+          <div className="contact-popover">
+            <div className="contact-popover-head">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 69
+  Обсудить проект <em>→</em>
+</button>
+
+>         {contactsOpen && (
+          <div className="contact-popover">
+            <div className="contact-popover-head">
+              <span>Связаться с нами</span>
+              <button type="button" onClick={() => setContactsOpen(false)}>
+                ×
+              </button>
+            </div>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 70
+</button>
+
+        {contactsOpen && (
+>           <div className="contact-popover">
+            <div className="contact-popover-head">
+              <span>Связаться с нами</span>
+              <button type="button" onClick={() => setContactsOpen(false)}>
+                ×
+              </button>
+            </div>
+
+            <div className="contact-grid">
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 71
+
+        {contactsOpen && (
+          <div className="contact-popover">
+>             <div className="contact-popover-head">
+              <span>Связаться с нами</span>
+              <button type="button" onClick={() => setContactsOpen(false)}>
+                ×
+              </button>
+            </div>
+
+            <div className="contact-grid">
+              
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 73
+          <div className="contact-popover">
+            <div className="contact-popover-head">
+              <span>Связаться с нами</span>
+>               <button type="button" onClick={() => setContactsOpen(false)}>
+                ×
+              </button>
+            </div>
+
+            <div className="contact-grid">
+              
+            <a
+  href="tel:+74955322617"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 78
+              </button>
+            </div>
+
+>             <div className="contact-grid">
+              
+            <a
+  href="tel:+74955322617"
+  onClick={() => trackContactClick("phone", "header_popover")}
+>
+  <i>☎</i><b>Телефон</b><small>Позвонить сейчас</small>
+</a>
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 82
+              
+            <a
+  href="tel:+74955322617"
+>   onClick={() => trackContactClick("phone", "header_popover")}
+>
+  <i>☎</i><b>Телефон</b><small>Позвонить сейчас</small>
+</a>
+
+<a
+  href="https://t.me/fouresolutions"
+  target="_blank"
+  rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 91
+  href="https://t.me/fouresolutions"
+  target="_blank"
+  rel="noreferrer"
+>   onClick={() => trackContactClick("telegram", "header_popover")}
+>
+  <i>✈</i><b>Telegram</b><small>Написать в чат</small>
+</a>
+
+<a
+  href="https://wa.me/79269628353"
+  target="_blank"
+  rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 100
+  href="https://wa.me/79269628353"
+  target="_blank"
+  rel="noreferrer"
+>   onClick={() => trackContactClick("whatsapp", "header_popover")}
+>
+  <i>☘</i><b>WhatsApp</b><small>Быстрый вопрос</small>
+</a>
+
+<a
+  href="mailto:info@4-solutions.ru"
+  onClick={() => trackContactClick("email", "header_popover")}
+>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 107
+
+<a
+  href="mailto:info@4-solutions.ru"
+>   onClick={() => trackContactClick("email", "header_popover")}
+>
+  <i>✉</i><b>Почта</b><small>Отправить письмо</small>
+</a>
+
+<a
+  href="https://www.instagram.com/four__solutions"
+  target="_blank"
+  rel="noreferrer"
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 116
+  href="https://www.instagram.com/four__solutions"
+  target="_blank"
+  rel="noreferrer"
+>   onClick={() => trackContactClick("instagram", "header_popover")}
+>
+  <i>◎</i><b>Instagram</b><small>Кейсы и визуал</small>
+</a>
+
+<a
+  href="https://max.ru/id9725006609_bot?start=site_header"
+  onClick={() => trackContactClick("max", "header_popover")}
+>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Header.jsx
+Строка: 123
+
+<a
+  href="https://max.ru/id9725006609_bot?start=site_header"
+>   onClick={() => trackContactClick("max", "header_popover")}
+>
+  <i>◆</i><b>MAX</b><small>Связь в мессенджере</small>
+</a>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Projects.jsx
+Строка: 124
+              </div>
+
+              <a
+>                 href="#contacts"
+                className="project-modal-button"
+                onClick={() => {
+                  trackMainCta("project_modal");
+                  closeProject();
+                }}
+              >
+                Обсудить похожий проект
+                <i>→</i>
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 3
+import { useEffect, useRef, useState } from "react";
+import "../styles/services.css";
+> import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackEvent,
+  trackLead,
+  trackServiceOpen,
+  trackServiceLead,
+} from "../services/analyticsService";
+
+const PRESENTATION_QR_SERVICE = {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 6
+import { sendLeadToCRM } from "../services/leadService";
+import {
+  trackEvent,
+>   trackLead,
+  trackServiceOpen,
+  trackServiceLead,
+} from "../services/analyticsService";
+
+const PRESENTATION_QR_SERVICE = {
+  number: "presentation_qr",
+  title: "Обсудить проект",
+};
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 8
+  trackEvent,
+  trackLead,
+  trackServiceOpen,
+>   trackServiceLead,
+} from "../services/analyticsService";
+
+const PRESENTATION_QR_SERVICE = {
+  number: "presentation_qr",
+  title: "Обсудить проект",
+};
+
+const PRESENTATION_QR_LEAD_DATA = {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 16
+  title: "Обсудить проект",
+};
+
+> const PRESENTATION_QR_LEAD_DATA = {
+  formName: "presentation_qr_modal",
+  entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 17
+};
+
+const PRESENTATION_QR_LEAD_DATA = {
+>   formName: "presentation_qr_modal",
+  entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 18
+
+const PRESENTATION_QR_LEAD_DATA = {
+  formName: "presentation_qr_modal",
+>   entryPoint: "presentation_qr_callback",
+  source: "presentation",
+};
+
+function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 22
+  source: "presentation",
+};
+
+> function shouldAutoOpenPresentationLead() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const url = new URL(window.location.href);
+  const isHomePage =
+    url.pathname === "/" || url.pathname.endsWith("/index.html");
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 33
+
+  return (
+    isHomePage &&
+>     (url.searchParams.get("openLead") === "1" ||
+      url.searchParams.get("modal") === "lead")
+  );
+}
+
+const services = [
+  {
+    number: "01",
+    title: "Дизайн-проект",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 34
+  return (
+    isHomePage &&
+    (url.searchParams.get("openLead") === "1" ||
+>       url.searchParams.get("modal") === "lead")
+  );
+}
+
+const services = [
+  {
+    number: "01",
+    title: "Дизайн-проект",
+    text: "Планировка, визуальная концепция, материалы, свет и сценарии пространства.",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 95
+
+export default function Services() {
+  const autoOpenHandled = useRef(false);
+>   const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
+  const [activeService, setActiveService] = useState(null);
+  const [modalService, setModalService] = useState(
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 97
+  const autoOpenHandled = useRef(false);
+  const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
+  const [activeService, setActiveService] = useState(null);
+>   const [modalService, setModalService] = useState(
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 98
+  const [initialPresentationLead] = useState(shouldAutoOpenPresentationLead);
+  const [activeService, setActiveService] = useState(null);
+  const [modalService, setModalService] = useState(
+>     initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+  });
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 100
+  const [modalService, setModalService] = useState(
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+>   const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 101
+    initialPresentationLead ? PRESENTATION_QR_SERVICE : null
+  );
+  const [leadContext, setLeadContext] = useState(
+>     initialPresentationLead ? "presentation_qr" : "service"
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 103
+  const [leadContext, setLeadContext] = useState(
+    initialPresentationLead ? "presentation_qr" : "service"
+  );
+>   const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+
+  useEffect(() => {
+    if (autoOpenHandled.current || typeof window === "undefined") {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 105
+  );
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+>     contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+
+  useEffect(() => {
+    if (autoOpenHandled.current || typeof window === "undefined") {
+      return;
+    }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 107
+    name: "",
+    contact: "",
+  });
+>   const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadStatus, setLeadStatus] = useState(null);
+
+  useEffect(() => {
+    if (autoOpenHandled.current || typeof window === "undefined") {
+      return;
+    }
+
+    autoOpenHandled.current = true;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 108
+    contact: "",
+  });
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+>   const [leadStatus, setLeadStatus] = useState(null);
+
+  useEffect(() => {
+    if (autoOpenHandled.current || typeof window === "undefined") {
+      return;
+    }
+
+    autoOpenHandled.current = true;
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 117
+
+    autoOpenHandled.current = true;
+
+>     if (!initialPresentationLead) {
+      return;
+    }
+
+    trackEvent("qr_presentation_lead_open", PRESENTATION_QR_LEAD_DATA);
+
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("openLead") === "1") {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 121
+      return;
+    }
+
+>     trackEvent("qr_presentation_lead_open", PRESENTATION_QR_LEAD_DATA);
+
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("openLead") === "1") {
+      url.searchParams.delete("openLead");
+      window.history.replaceState(
+        window.history.state,
+        "",
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 125
+
+    const url = new URL(window.location.href);
+
+>     if (url.searchParams.get("openLead") === "1") {
+      url.searchParams.delete("openLead");
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${url.pathname}${url.search}${url.hash}`
+      );
+    }
+  }, [initialPresentationLead]);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 126
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("openLead") === "1") {
+>       url.searchParams.delete("openLead");
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${url.pathname}${url.search}${url.hash}`
+      );
+    }
+  }, [initialPresentationLead]);
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 133
+        `${url.pathname}${url.search}${url.hash}`
+      );
+    }
+>   }, [initialPresentationLead]);
+
+  function toggleService(item) {
+    const nextValue = activeService === item.number ? null : item.number;
+
+    setActiveService(nextValue);
+
+    if (nextValue) {
+      trackServiceOpen(item.title);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 145
+    }
+  }
+
+>   function handleServiceLead(item) {
+    trackServiceLead(item.title);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    setLeadContext("service");
+    setModalService(item);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 146
+  }
+
+  function handleServiceLead(item) {
+>     trackServiceLead(item.title);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    setLeadContext("service");
+    setModalService(item);
+    setLeadStatus(null);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 152
+      return;
+    }
+
+>     setLeadContext("service");
+    setModalService(item);
+    setLeadStatus(null);
+  }
+
+  function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 153
+    }
+
+    setLeadContext("service");
+>     setModalService(item);
+    setLeadStatus(null);
+  }
+
+  function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 154
+
+    setLeadContext("service");
+    setModalService(item);
+>     setLeadStatus(null);
+  }
+
+  function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+    setModalService(null);
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 157
+    setLeadStatus(null);
+  }
+
+>   function closeLeadModal() {
+    if (leadSubmitting) {
+      return;
+    }
+
+    setModalService(null);
+    setLeadStatus(null);
+  }
+
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 158
+  }
+
+  function closeLeadModal() {
+>     if (leadSubmitting) {
+      return;
+    }
+
+    setModalService(null);
+    setLeadStatus(null);
+  }
+
+  async function submitServiceLead(event) {
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 162
+      return;
+    }
+
+>     setModalService(null);
+    setLeadStatus(null);
+  }
+
+  async function submitServiceLead(event) {
+    event.preventDefault();
+
+    if (!modalService || leadSubmitting) {
+      return;
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 163
+    }
+
+    setModalService(null);
+>     setLeadStatus(null);
+  }
+
+  async function submitServiceLead(event) {
+    event.preventDefault();
+
+    if (!modalService || leadSubmitting) {
+      return;
+    }
+------------------------------------------------------------
+
+Файл: C:\Code\4sn\4sn\src\components\Services.jsx
+Строка: 166
+    setLeadStatus(null);
+  }
+
+>   async function submitServiceLead(event) {
+    event.preventDefault();
+
+    if (!modalService || leadSubmitting) {
+      return;
+    }
+
+    const name = leadForm.name.trim();
+    const contact = leadForm.contact.trim();
+------------------------------------------------------------
+
+
+==========================================================================================
+12. ENV-ФАЙЛЫ — ТОЛЬКО НАЗВАНИЯ, БЕЗ СОДЕРЖИМОГО
+==========================================================================================
+
+
+==========================================================================================
+13. ДОСТУПНЫЕ NPM-КОМАНДЫ
+==========================================================================================
+Scripts available in 4sn@0.0.0 via `npm run`:
+  dev
+    vite
+  build
+    vite build
+  preview
+    vite preview
+  check
+    npm run build
+
+
+КОНЕЦ ОТЧЁТА

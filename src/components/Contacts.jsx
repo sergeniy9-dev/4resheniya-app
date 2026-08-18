@@ -7,7 +7,6 @@ import {
 } from "../services/analyticsService";
 import { Send, Camera, MessageCircle } from "lucide-react";
 
-
 export default function Contacts() {
   const [form, setForm] = useState({
     name: "",
@@ -46,7 +45,7 @@ export default function Contacts() {
           <p className="eyebrow">НАШИ КАНАЛЫ</p>
           <div className="contacts-socials">
   <a
-    href="https://max.ru/USERNAME"
+    href="https://max.ru/id9725006609_bot?start=site_contacts"
     target="_blank"
     rel="noreferrer"
     aria-label="MAX"
@@ -56,7 +55,7 @@ export default function Contacts() {
   </a>
 
   <a
-    href="https://t.me/USERNAME"
+    href="https://t.me/fouresolutions"
     target="_blank"
     rel="noreferrer"
     aria-label="Telegram"
@@ -66,7 +65,7 @@ export default function Contacts() {
   </a>
 
   <a
-    href="https://instagram.com/USERNAME"
+    href="https://www.instagram.com/four__solutions"  
     target="_blank"
     rel="noreferrer"
     aria-label="Instagram"
@@ -94,10 +93,10 @@ export default function Contacts() {
             </a>
 
             <a
-              href="mailto:info@4solutions.ru"
+              href="mailto:info@4-solutions.ru"
               onClick={() => trackContactClick("email", "contacts_section")}
             >
-              info@4solutions.ru
+              info@4-solutions.ru
             </a>
           </div>
 

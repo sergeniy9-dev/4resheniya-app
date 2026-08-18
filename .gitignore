@@ -8,5 +8,37 @@ dist
 .env*.local
 api/config.php
 storage/leads/*.log
+# Переменные окружения и секреты
 .env
 .env.local
+.env.*.local
+*.key
+*.pem
+secrets.json
+
+# Зависимости
+node_modules/
+venv/
+env/
+__pycache__/
+.pip/
+
+# Сборка и дистрибутив
+build/
+dist/
+out/
+*.log
+
+# ОС и редакторы кода
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Локальные базы данных и временные файлы
+*.sqlite
+*.db
+tmp/
+temp/
