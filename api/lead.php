@@ -2,10 +2,39 @@
 
 declare(strict_types=1);
 
+/**
+ * Обработчик заявок 4Solutions
+ * 
+ * Функции безопасности:
+ * - Валидация CORS origin из whitelist
+ * - Санитизация всех входных данных
+ * - Безопасное получение IP (с приоритетом Cloudflare)
+ * - Логирование всех запросов
+ */
+
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: https://www.4-solutions.ru');
+
+// Динамическая проверка CORS origin
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [];
+
+$configPath = __DIR__ . '/config.php';
+if (file_exists($configPath)) {
+    $config = require $configPath;
+    $allowedOrigins = $config['ALLOWED_ORIGINS'] ?? [];
+}
+
+if ($origin && in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+    header('Access-Control-Allow-Credentials: true');
+}
+
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -19,20 +48,64 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ]);
 }
 
-$configPath = __DIR__ . '/config.php';
-
+// Загрузка конфигурации
 if (!file_exists($configPath)) {
     jsonResponse(500, [
         'success' => false,
-        'message' => 'config.php not found',
+        'message' => 'Configuration file not found. Please create config.php from config.example.php',
     ]);
 }
 
 $config = require $configPath;
 
+// Rate limiting (простая реализация)
+$rateLimitFile = dirname(__DIR__) . '/storage/rate_limit.json';
+$maxRequestsPerMinute = 10; // Максимум запросов в минуту с одного IP
+
+$currentIp = getClientIp();
+if ($currentIp !== '') {
+    $rateData = [];
+    if (file_exists($rateLimitFile)) {
+        $rateData = json_decode(file_get_contents($rateLimitFile), true) ?: [];
+    }
+    
+    $currentTime = time();
+    $minuteAgo = $currentTime - 60;
+    
+    // Очищаем старые записи
+    foreach ($rateData as $ip => $timestamps) {
+        $rateData[$ip] = array_filter($timestamps, fn($ts) => $ts > $minuteAgo);
+        if (empty($rateData[$ip])) {
+            unset($rateData[$ip]);
+        }
+    }
+    
+    // Проверяем лимит для текущего IP
+    $currentTimestamps = $rateData[$currentIp] ?? [];
+    if (count($currentTimestamps) >= $maxRequestsPerMinute) {
+        jsonResponse(429, [
+            'success' => false,
+            'message' => 'Too many requests. Please try again later.',
+        ]);
+    }
+    
+    // Добавляем текущий запрос
+    $currentTimestamps[] = $currentTime;
+    $rateData[$currentIp] = $currentTimestamps;
+    
+    // Сохраняем
+    $rateDir = dirname($rateLimitFile);
+    if (!is_dir($rateDir)) {
+        mkdir($rateDir, 0755, true);
+    }
+    file_put_contents($rateLimitFile, json_encode($rateData));
+}
+
+// Часовой пояс
 $timezone = $config['TIMEZONE'] ?? 'Europe/Moscow';
 date_default_timezone_set($timezone);
 
+// Получение и парсинг тела запроса
 $rawBody = file_get_contents('php://input');
 $data = json_decode($rawBody ?: '', true);
 
@@ -43,10 +116,11 @@ if (!is_array($data)) {
 if (!is_array($data)) {
     jsonResponse(400, [
         'success' => false,
-        'message' => 'Invalid JSON',
+        'message' => 'Invalid request format',
     ]);
 }
 
+// Валидация и санитизация входных данных
 $name = cleanString($data['name'] ?? '');
 $rawContact = cleanString(
     $data['contact']
@@ -266,26 +340,33 @@ function normalizePhone(string $contact): string
 
 function getClientIp(): string
 {
-    $keys = [
-        'HTTP_CF_CONNECTING_IP',
-        'HTTP_X_FORWARDED_FOR',
-        'HTTP_X_REAL_IP',
-        'REMOTE_ADDR',
-    ];
-
-    foreach ($keys as $key) {
-        if (!empty($_SERVER[$key])) {
-            $value = (string) $_SERVER[$key];
-
-            if ($key === 'HTTP_X_FORWARDED_FOR') {
-                $parts = explode(',', $value);
-                return trim($parts[0]);
-            }
-
-            return trim($value);
+    // Приоритет Cloudflare IP (если используется Cloudflare)
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP);
+        if ($ip !== false) {
+            return $ip;
         }
     }
-
+    
+    // Для других прокси можно доверять только известным
+    // X-Forwarded-For может быть подделан, поэтому используем с осторожностью
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Берём первый IP из списка (клиентский)
+        $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $ip = filter_var(trim($parts[0]), FILTER_VALIDATE_IP);
+        if ($ip !== false) {
+            return $ip;
+        }
+    }
+    
+    // Прямой IP подключения
+    if (!empty($_SERVER['REMOTE_ADDR'])) {
+        $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+        if ($ip !== false) {
+            return $ip;
+        }
+    }
+    
     return '';
 }
 
