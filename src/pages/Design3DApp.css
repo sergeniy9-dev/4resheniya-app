@@ -1,0 +1,348 @@
+/* Основные стили в духе 4-solutions.ru */
+.d3d-container {
+  font-family: "Manrope", sans-serif;
+  color: var(--sand);
+  background: var(--bg-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Хедер */
+.d3d-header {
+  background: linear-gradient(135deg, rgba(215,168,75,0.15) 0%, rgba(215,168,75,0.05) 100%);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.d3d-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.d3d-subtitle {
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: var(--sand-muted);
+  margin-left: 10px;
+}
+
+/* Навигация */
+.d3d-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.d3d-tab {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--sand);
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.d3d-tab:hover {
+  background: rgba(215,168,75,0.08);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.d3d-tab.active {
+  background: var(--gold);
+  color: var(--bg-main);
+  font-weight: 600;
+  box-shadow: var(--shadow-gold);
+  border-color: var(--gold);
+}
+
+/* Контент */
+.d3d-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.d3d-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: var(--shadow-gold);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+h2 {
+  color: var(--gold);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* Сетка материалов */
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.material-card {
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: rgba(255,255,255,0.02);
+}
+
+.material-card:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-4px);
+  background: rgba(215,168,75,0.05);
+}
+
+.material-card.selected {
+  border-color: var(--gold);
+  background: rgba(215,168,75,0.1);
+  box-shadow: 0 0 0 2px rgba(215,168,75,0.3);
+}
+
+.material-img {
+  height: 140px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.material-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  color: var(--sand);
+  font-weight: 600;
+}
+
+.material-cat {
+  color: var(--sand-muted);
+  font-size: 0.8rem;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.material-price {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+/* Калькулятор */
+.calc-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .calc-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calc-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.calc-controls label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: var(--sand);
+  font-size: 0.9rem;
+}
+
+.calc-controls input {
+  margin-top: 8px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  color: var(--sand);
+  font-size: 1rem;
+  transition: all var(--transition);
+}
+
+.calc-controls input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: var(--shadow-gold);
+  background: rgba(215,168,75,0.05);
+}
+
+.calc-controls input::placeholder {
+  color: var(--sand-muted);
+}
+
+.calc-result {
+  background: rgba(215,168,75,0.05);
+  padding: 24px;
+  border-radius: 6px;
+  border-left: 3px solid var(--gold);
+}
+
+.calc-result h3 {
+  margin-top: 0;
+  color: var(--sand);
+  font-size: 1.1rem;
+}
+
+.total-price {
+  margin-top: 20px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  padding-top: 18px;
+  border-top: 1px solid var(--panel-border);
+}
+
+/* Таблица сравнения */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.comparison-table th {
+  background: rgba(215,168,75,0.08);
+  color: var(--gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.8px;
+}
+
+.comparison-table tr:hover {
+  background: rgba(215,168,75,0.05);
+}
+
+.comparison-table .highlight {
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 1.1rem;
+}
+
+/* Пустое состояние */
+.empty-state {
+  text-align: center;
+  padding: 50px;
+  color: var(--sand-muted);
+  font-style: italic;
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+  border: 1px dashed var(--panel-border);
+}
+
+/* Проект */
+.project-summary {
+  line-height: 1.9;
+  font-size: 1rem;
+  color: var(--sand);
+}
+
+.status-badge {
+  background: rgba(215,168,75,0.2);
+  color: var(--gold);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--panel-border);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+  color: var(--bg-main);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 32px rgba(215,168,75,0.25);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .d3d-header {
+    padding: 1.25rem;
+  }
+  
+  .d3d-nav {
+    gap: 8px;
+  }
+  
+  .d3d-tab {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+  
+  .d3d-content {
+    padding: 1.25rem;
+  }
+  
+  .materials-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+  
+  .calc-wrapper {
+    gap: 24px;
+  }
+}
