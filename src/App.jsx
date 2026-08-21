@@ -13,6 +13,7 @@ import QualityStandard from "./components/QualityStandard";
 import ConsentBanner from "./components/ConsentBanner";
 import { initAttribution } from "./services/attributionService";
 import Design3D from "./pages/Design3D";
+import Design3DApp from "./pages/Design3DApp";
 
 function MainPage() {
   useReveal();
@@ -53,6 +54,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/design3d" element={<Design3D />} />
+        <Route path="/design3d-app" element={<Design3DApp />} />
       </Routes>
     </Router>
   );
